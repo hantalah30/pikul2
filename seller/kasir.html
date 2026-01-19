@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
@@ -749,7 +749,7 @@
         <header class="kasir-header">
           <div style="display: flex; align-items: center; gap: 16px">
             <button
-              onclick="window.location.href='index.html'"
+              onclick="window.location.href = '/'"
               style="
                 border: none;
                 background: #f1f5f9;
@@ -846,7 +846,7 @@
                     src=""
                     class="qr-center-logo"
                     id="qrisLogoDesk"
-                    onerror="this.style.display='none'"
+                    onerror="this.style.display = 'none'"
                   />
                 </div>
               </div>
@@ -982,7 +982,7 @@
                       src=""
                       class="qr-center-logo"
                       id="qrisLogoMob"
-                      onerror="this.style.display='none'"
+                      onerror="this.style.display = 'none'"
                     />
                   </div>
                 </div>
@@ -1113,7 +1113,7 @@
             query(
               collection(db, "orders"),
               where("vendorId", "==", state.vendor.id),
-              where("status", "==", "Selesai")
+              where("status", "==", "Selesai"),
             ),
             (s) => {
               let counts = {};
@@ -1127,7 +1127,7 @@
               });
               state.salesCounts = counts;
               renderMenu();
-            }
+            },
           );
 
           renderCategories();
@@ -1145,7 +1145,7 @@
             (c) =>
               `<div class="cat-pill ${
                 state.activeCat === c ? "active" : ""
-              }" onclick="window.setCat('${c}')">${c}</div>`
+              }" onclick="window.setCat('${c}')">${c}</div>`,
           )
           .join("");
       }
@@ -1166,7 +1166,7 @@
         }
 
         const filtered = state.vendor.menu.filter((m) =>
-          m.name.toLowerCase().includes(state.searchQuery)
+          m.name.toLowerCase().includes(state.searchQuery),
         );
 
         grid.innerHTML = filtered
@@ -1196,7 +1196,7 @@
       // --- CART LOGIC ---
       window.addToCart = (menuIdx, cardEl) => {
         const filtered = state.vendor.menu.filter((m) =>
-          m.name.toLowerCase().includes(state.searchQuery)
+          m.name.toLowerCase().includes(state.searchQuery),
         );
         const item = filtered[menuIdx];
         const existing = state.cart.find((c) => c.name === item.name);
@@ -1240,7 +1240,7 @@
                       item.name
                     }</div>
                     <div class="muted" style="font-size:12px;">${rupiah(
-                      item.price
+                      item.price,
                     )}</div>
                 </div>
                 <div class="qty-control">
@@ -1255,7 +1255,7 @@
                     }', 1)">+</button>
                 </div>
             </div>
-        `
+        `,
           )
           .join("");
 
@@ -1424,7 +1424,7 @@
           containers.forEach(
             (c) =>
               (c.div.innerHTML =
-                "<div style='color:red; padding:20px;'>QRIS Tidak Tersedia</div>")
+                "<div style='color:red; padding:20px;'>QRIS Tidak Tersedia</div>"),
           );
         }
       }
