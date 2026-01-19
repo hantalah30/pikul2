@@ -749,7 +749,7 @@
         <header class="kasir-header">
           <div style="display: flex; align-items: center; gap: 16px">
             <button
-              onclick="window.location.href = 'index.html'"
+              onclick="window.location.href = 'index'"
               style="
                 border: none;
                 background: #f1f5f9;
@@ -1084,7 +1084,7 @@
       // --- INIT ---
       async function init() {
         const vid = localStorage.getItem("pikul_seller_id");
-        if (!vid) return (window.location.href = "index.html");
+        if (!vid) return (window.location.href = "index");
 
         try {
           const snap = await getDoc(doc(db, "vendors", vid));
