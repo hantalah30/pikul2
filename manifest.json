@@ -1,0 +1,28 @@
+{
+  "name": "PIKUL - Platform Kuliner Digital",
+  "short_name": "PIKUL",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ff7a00",
+  "orientation": "portrait",
+  "scope": "./",
+  "icons": [
+    {
+      "src": "./pikul.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "./pikul.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "./Mitra-Pikul.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"
+    />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="Kasir PIKUL" />
+    <link rel="apple-touch-icon" href="../Kasir.png" />
+    <link rel="manifest" href="manifest-kasir.json" />
+
+    <title>Kasir - PIKUL Mitra</title>
+    <link rel="icon" type="image/jpeg" href="../Kasir.png" />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+      /* --- GLOBAL VARIABLES --- */
+      :root {
+        --primary: #ff7a00;
+        --primary-gradient: linear-gradient(135deg, #ff7a00 0%, #ff5e00 100%);
+        --bg-color: #f1f5f9;
+        --card-bg: #ffffff;
+        --text-main: #1e293b;
+        --text-muted: #64748b;
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.02);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+        --radius-lg: 20px;
+        --radius-md: 14px;
+      }
+
+      body {
+        background: var(--bg-color);
+        height: 100vh;
+        overflow: hidden;
+        font-family: "Plus Jakarta Sans", sans-serif;
+        color: var(--text-main);
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      /* --- LAYOUT --- */
+      .kasir-layout {
+        display: flex;
+        height: 100vh;
+        max-width: 1800px;
+        margin: 0 auto;
+        background: var(--bg-color);
+      }
+
+      /* --- LEFT AREA: PRODUCT --- */
+      .product-area {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .kasir-header {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        padding: 16px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
+        z-index: 20;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .search-box {
+        background: #f1f5f9;
+        border-radius: 50px;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        width: 250px;
+        border: 2px solid transparent;
+        transition: 0.3s;
+      }
+      .search-box:focus-within {
+        background: white;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(255, 122, 0, 0.1);
+      }
+      .search-box input {
+        border: none;
+        background: transparent;
+        outline: none;
+        width: 100%;
+        font-weight: 600;
+        font-family: inherit;
+        margin-left: 8px;
+        font-size: 14px;
+      }
+
+      .category-scroll {
+        display: flex;
+        gap: 10px;
+        padding: 16px 24px;
+        overflow-x: auto;
+        flex-shrink: 0;
+        scrollbar-width: none;
+        background: linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0.8),
+          transparent
+        );
+      }
+      .category-scroll::-webkit-scrollbar {
+        display: none;
+      }
+
+      .cat-pill {
+        padding: 10px 20px;
+        border-radius: 30px;
+        background: white;
+        border: 1px solid #e2e8f0;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        white-space: nowrap;
+        box-shadow: var(--shadow-sm);
+      }
+      .cat-pill:hover {
+        transform: translateY(-2px);
+      }
+      .cat-pill.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+        box-shadow: 0 4px 12px rgba(255, 122, 0, 0.3);
+      }
+
+      .product-grid {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px 24px 120px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 20px;
+        align-content: start;
+      }
+
+      /* --- PRODUCT CARD --- */
+      .prod-card {
+        background: var(--card-bg);
+        border-radius: var(--radius-lg);
+        padding: 12px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        border: 1px solid transparent;
+        box-shadow: var(--shadow-sm);
+        animation: fadeIn 0.5s ease;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .prod-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+        border-color: rgba(255, 122, 0, 0.2);
+      }
+      .prod-card:active {
+        transform: scale(0.96);
+      }
+
+      .prod-img-wrapper {
+        width: 100%;
+        height: 140px;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        margin-bottom: 12px;
+        position: relative;
+      }
+      .prod-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        background: #f8fafc;
+        transition: transform 0.3s;
+      }
+      .prod-card:hover .prod-img {
+        transform: scale(1.05);
+      }
+
+      /* Badge Terjual */
+      .badge-sold {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        background: linear-gradient(135deg, #ff9966, #ff5e62);
+        color: white;
+        font-size: 10px;
+        font-weight: 800;
+        padding: 4px 10px;
+        border-radius: 20px;
+        box-shadow: 0 4px 10px rgba(255, 94, 98, 0.4);
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      /* Tombol Tambah Overlay */
+      .btn-add-overlay {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        width: 32px;
+        height: 32px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: var(--primary);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        opacity: 0;
+        transform: translateY(10px);
+        transition: 0.3s;
+      }
+      .prod-card:hover .btn-add-overlay {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .prod-title {
+        font-weight: 700;
+        font-size: 15px;
+        margin-bottom: 4px;
+        line-height: 1.3;
+        color: var(--text-main);
+      }
+      .prod-price {
+        color: var(--primary);
+        font-weight: 800;
+        font-size: 15px;
+        margin-top: auto;
+      }
+
+      /* --- RIGHT AREA: CART SIDEBAR --- */
+      .cart-sidebar {
+        width: 420px;
+        background: white;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        box-shadow: -5px 0 30px rgba(0, 0, 0, 0.05);
+        z-index: 50;
+        border-left: 1px solid var(--border);
+      }
+
+      .cart-header {
+        padding: 24px;
+        border-bottom: 1px dashed var(--border);
+        background: #fff;
+      }
+      .cart-header h2 {
+        margin: 0;
+        font-size: 22px;
+      }
+
+      .cart-items {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        scroll-behavior: smooth;
+      }
+
+      .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        padding: 12px;
+        border-radius: 16px;
+        background: #f8fafc;
+        border: 1px solid transparent;
+        transition: 0.2s;
+        animation: slideInRight 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      }
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .cart-item.highlight {
+        background: #fff7ed;
+        border-color: #fdba74;
+      }
+
+      .qty-control {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: white;
+        padding: 4px;
+        border-radius: 12px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+      .qty-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-weight: 800;
+        background: #f1f5f9;
+        transition: 0.1s;
+        border: none;
+      }
+      .qty-btn:active {
+        background: var(--primary);
+        color: white;
+        transform: scale(0.9);
+      }
+
+      .cart-footer {
+        padding: 24px;
+        background: white;
+        border-top: 1px solid var(--border);
+        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.05);
+      }
+
+      /* --- ANIMATION: FLY TO CART --- */
+      .fly-item {
+        position: fixed;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        z-index: 9999;
+        pointer-events: none;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        border: 2px solid white;
+      }
+
+      /* --- MOBILE BAR & MODAL --- */
+      .mobile-cart-bar {
+        display: none;
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 400px;
+        background: #1e293b;
+        color: white;
+        padding: 12px 12px 12px 24px;
+        border-radius: 100px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        z-index: 100;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .mobile-cart-bar:active {
+        transform: translateX(-50%) scale(0.95);
+      }
+      .mobile-cart-bar.pop {
+        animation: popBar 0.3s ease;
+      }
+      @keyframes popBar {
+        50% {
+          transform: translateX(-50%) scale(1.05);
+        }
+      }
+
+      .mob-cart-btn {
+        background: var(--primary);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 14px;
+        box-shadow: 0 4px 15px rgba(255, 122, 0, 0.4);
+      }
+
+      /* --- QRIS STYLE MODERN --- */
+      .qris-card-container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        text-align: center;
+        position: relative;
+        margin-bottom: 20px;
+      }
+
+      .qris-top-banner {
+        background: linear-gradient(90deg, #d6001c 50%, #ffffff 50%);
+        padding: 12px 20px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        position: relative;
+      }
+      .qris-logo-text {
+        font-weight: 900;
+        font-style: italic;
+        font-size: 24px;
+        color: white;
+        text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+      }
+
+      .qris-merchant-section {
+        padding: 15px 20px 5px;
+        border-bottom: 1px dashed #e2e8f0;
+      }
+      .qris-store-name {
+        font-size: 18px;
+        font-weight: 800;
+        color: #1e293b;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .qris-nmid {
+        font-size: 11px;
+        color: #64748b;
+        margin-top: 4px;
+      }
+
+      .qris-code-area {
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: white;
+        position: relative;
+      }
+
+      .qr-frame {
+        position: relative;
+        display: inline-block;
+        padding: 10px;
+        border-radius: 12px;
+        background: white;
+      }
+
+      .qr-center-logo {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 40px;
+        height: 40px;
+        background: white;
+        border-radius: 8px;
+        padding: 3px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        object-fit: contain;
+        z-index: 10;
+      }
+
+      .qris-bottom-price {
+        background: #f0fdf4;
+        padding: 15px;
+        border-top: 1px dashed #bbf7d0;
+      }
+      .qris-price-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: #166534;
+        font-weight: 700;
+        letter-spacing: 1px;
+        margin-bottom: 4px;
+      }
+      .qris-price-value {
+        font-size: 24px;
+        font-weight: 800;
+        color: #15803d;
+      }
+
+      /* --- NEW UPLOAD BUTTON STYLE --- */
+      .upload-btn-modern {
+        background: #fff7ed;
+        border: 2px dashed var(--primary);
+        border-radius: 16px;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 16px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .upload-btn-modern:active {
+        transform: scale(0.98);
+        background: #ffedd5;
+      }
+
+      .upload-icon {
+        font-size: 28px;
+        background: white;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        box-shadow: 0 4px 10px rgba(255, 122, 0, 0.15);
+        color: var(--primary);
+      }
+
+      .upload-text-main {
+        font-weight: 700;
+        color: var(--text-main);
+        font-size: 14px;
+      }
+
+      .upload-text-sub {
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+
+      /* Success State */
+      .upload-btn-modern.done {
+        background: #f0fdf4;
+        border-color: #22c55e;
+        border-style: solid;
+      }
+      .upload-btn-modern.done .upload-icon {
+        color: #22c55e;
+        box-shadow: 0 4px 10px rgba(34, 197, 94, 0.15);
+      }
+
+      /* --- RESPONSIVE --- */
+      @media (max-width: 1024px) {
+        .cart-sidebar {
+          display: none;
+        }
+        .mobile-cart-bar {
+          display: flex;
+        }
+        .product-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 12px;
+          padding: 16px 16px 120px;
+        }
+        .kasir-header {
+          padding: 12px 16px;
+        }
+        .search-box {
+          width: 40px;
+          padding: 10px;
+          border-radius: 50%;
+          justify-content: center;
+        }
+        .search-box input {
+          display: none;
+        }
+        .search-box:focus-within {
+          width: 200px;
+          border-radius: 20px;
+          justify-content: flex-start;
+        }
+        .search-box:focus-within input {
+          display: block;
+        }
+
+        .btn-add-overlay {
+          opacity: 1;
+          transform: translateY(0);
+          width: 28px;
+          height: 28px;
+          font-size: 12px;
+        }
+      }
+
+      /* MODAL FIXED FOOTER */
+      .modal {
+        position: fixed;
+        inset: 0;
+        z-index: 2000;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        visibility: hidden;
+        opacity: 0;
+        transition: 0.3s;
+      }
+      .modal.active {
+        visibility: visible;
+        opacity: 1;
+      }
+      .modal-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+      }
+
+      .sheet-cart {
+        position: relative;
+        width: 100%;
+        max-width: 500px;
+        height: 90vh;
+        background: #f8fafc;
+        border-radius: 24px 24px 0 0;
+        display: flex;
+        flex-direction: column;
+        transform: translateY(100%);
+        transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+      }
+      .modal.active .sheet-cart {
+        transform: translateY(0);
+      }
+
+      .sheet-header-fixed {
+        padding: 20px;
+        background: white;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 24px 24px 0 0;
+      }
+      .sheet-body-scroll {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+      }
+      .sheet-footer-fixed {
+        padding: 20px;
+        background: white;
+        border-top: 1px solid #eee;
+        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
+      }
+
+      /* TABS */
+      .pay-tabs {
+        display: flex;
+        background: #e2e8f0;
+        padding: 4px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+      }
+      .pay-tab {
+        flex: 1;
+        padding: 12px;
+        text-align: center;
+        border-radius: 12px;
+        font-weight: 700;
+        color: #64748b;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .pay-tab.active {
+        background: white;
+        color: var(--text-main);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="authCheck"
+      style="
+        position: fixed;
+        inset: 0;
+        background: white;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        style="
+          font-size: 48px;
+          margin-bottom: 16px;
+          animation: bounce 1s infinite;
+        "
+      >
+        🏪
+      </div>
+      <div
+        style="
+          font-weight: 800;
+          color: #1e293b;
+          font-size: 20px;
+          letter-spacing: -0.5px;
+        "
+      >
+        Kasir PIKUL
+      </div>
+    </div>
+
+    <input
+      type="file"
+      id="proofInput"
+      accept="image/*"
+      class="hidden"
+      onchange="handleProofUpload(this)"
+    />
+
+    <div class="kasir-layout">
+      <div class="product-area">
+        <header class="kasir-header">
+          <div style="display: flex; align-items: center; gap: 16px">
+            <button
+              onclick="window.location.href='index.html'"
+              style="
+                border: none;
+                background: #f1f5f9;
+                width: 44px;
+                height: 44px;
+                border-radius: 14px;
+                cursor: pointer;
+                font-size: 20px;
+                transition: 0.2s;
+                color: #334155;
+              "
+            >
+              ←
+            </button>
+            <div>
+              <h3
+                style="
+                  margin: 0;
+                  font-size: 18px;
+                  color: #0f172a;
+                  font-weight: 800;
+                "
+                id="storeName"
+              >
+                Nama Toko
+              </h3>
+              <small
+                class="muted"
+                style="font-size: 12px; font-weight: 600; color: #94a3b8"
+                >Mode Kasir</small
+              >
+            </div>
+          </div>
+          <div class="search-box">
+            <span>🔍</span>
+            <input id="searchMenu" placeholder="Cari menu..." />
+          </div>
+        </header>
+
+        <div class="category-scroll" id="catList"></div>
+        <div class="product-grid" id="menuGrid"></div>
+      </div>
+
+      <aside class="cart-sidebar" id="desktopCart">
+        <div class="cart-header">
+          <h2>Keranjang</h2>
+          <p class="muted" style="margin: 4px 0 0; font-size: 13px">
+            Pesanan Baru
+          </p>
+        </div>
+
+        <div class="cart-items" id="cartListDesktop">
+          <div style="text-align: center; margin-top: 100px; color: #cbd5e1">
+            <div style="font-size: 64px; margin-bottom: 16px; opacity: 0.5">
+              🛒
+            </div>
+            <p style="font-weight: 600">Belum ada item dipilih</p>
+          </div>
+        </div>
+
+        <div class="cart-footer">
+          <div class="pay-tabs">
+            <div
+              class="pay-tab active"
+              onclick="setPaymentMethod('cash')"
+              id="tabCashDesk"
+            >
+              💵 Tunai
+            </div>
+            <div
+              class="pay-tab"
+              onclick="setPaymentMethod('qris')"
+              id="tabQrisDesk"
+            >
+              📱 QRIS
+            </div>
+          </div>
+
+          <div id="qrisSectionDesk" class="hidden">
+            <div class="qris-card-container">
+              <div class="qris-top-banner">
+                <span class="qris-logo-text">QRIS</span>
+              </div>
+              <div class="qris-merchant-section">
+                <div class="qris-store-name" id="qrisStoreNameDesk">
+                  NAMA TOKO
+                </div>
+                <div class="qris-nmid">NMID: ID123456789</div>
+              </div>
+              <div class="qris-code-area">
+                <div class="qr-frame">
+                  <div id="qrisCanvasDesk"></div>
+                  <img
+                    src=""
+                    class="qr-center-logo"
+                    id="qrisLogoDesk"
+                    onerror="this.style.display='none'"
+                  />
+                </div>
+              </div>
+              <div class="qris-bottom-price">
+                <div class="qris-price-label">Total Pembayaran</div>
+                <div class="qris-price-value" id="qrisTotalDesk">Rp 0</div>
+              </div>
+            </div>
+
+            <div
+              class="upload-btn-modern"
+              id="uploadBoxDesk"
+              onclick="triggerUpload()"
+            >
+              <div class="upload-icon">📸</div>
+              <div class="upload-text-main">Upload Bukti Transfer</div>
+              <div class="upload-text-sub">Klik untuk ambil foto</div>
+            </div>
+
+            <div style="height: 16px"></div>
+          </div>
+
+          <div class="rowBetween" style="margin-bottom: 12px">
+            <span class="muted" style="font-weight: 600">Total Item</span>
+            <b id="itemCountDesk">0</b>
+          </div>
+          <div class="rowBetween" style="margin-bottom: 24px; font-size: 20px">
+            <b>Total Bayar</b>
+            <b style="color: var(--primary)" id="totalDesk">Rp 0</b>
+          </div>
+
+          <button
+            class="btn primary full"
+            style="padding: 16px; font-size: 16px; border-radius: 16px"
+            id="btnPayDesk"
+            onclick="processCheckout()"
+          >
+            Bayar Tunai
+          </button>
+        </div>
+      </aside>
+    </div>
+
+    <div class="mobile-cart-bar" id="mobileBar" onclick="openMobileCart()">
+      <div style="display: flex; align-items: center; gap: 12px">
+        <div
+          style="
+            background: rgba(255, 255, 255, 0.2);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+          "
+          id="mobCountBadge"
+        >
+          0
+        </div>
+        <div style="display: flex; flex-direction: column">
+          <span style="font-size: 11px; opacity: 0.8; font-weight: 500"
+            >Total Tagihan</span
+          >
+          <span style="font-weight: 800; font-size: 18px" id="mobTotalBadge"
+            >Rp 0</span
+          >
+        </div>
+      </div>
+      <div class="mob-cart-btn">Lihat & Bayar ➜</div>
+    </div>
+
+    <div id="mobileCartModal" class="modal">
+      <div class="modal-overlay" onclick="closeMobileCart()"></div>
+      <div class="modal-sheet sheet-cart">
+        <div class="sheet-header-fixed">
+          <h3 style="margin: 0; font-size: 20px; font-weight: 800">
+            Keranjang
+          </h3>
+          <button
+            onclick="closeMobileCart()"
+            style="
+              background: #f1f5f9;
+              border: none;
+              width: 40px;
+              height: 40px;
+              border-radius: 50%;
+              font-size: 20px;
+              cursor: pointer;
+            "
+          >
+            ✕
+          </button>
+        </div>
+
+        <div class="sheet-body-scroll">
+          <div id="cartListMobile"></div>
+
+          <div style="margin-top: 20px">
+            <div class="pay-tabs">
+              <div
+                class="pay-tab active"
+                onclick="setPaymentMethod('cash')"
+                id="tabCashMob"
+              >
+                💵 Tunai
+              </div>
+              <div
+                class="pay-tab"
+                onclick="setPaymentMethod('qris')"
+                id="tabQrisMob"
+              >
+                📱 QRIS
+              </div>
+            </div>
+
+            <div id="qrisSectionMob" class="hidden">
+              <div class="qris-card-container">
+                <div class="qris-top-banner">
+                  <span class="qris-logo-text">QRIS</span>
+                </div>
+                <div class="qris-merchant-section">
+                  <div class="qris-store-name" id="qrisStoreNameMob">
+                    NAMA TOKO
+                  </div>
+                  <div class="qris-nmid">Scan untuk membayar</div>
+                </div>
+                <div class="qris-code-area">
+                  <div class="qr-frame">
+                    <div id="qrisCanvasMob"></div>
+                    <img
+                      src=""
+                      class="qr-center-logo"
+                      id="qrisLogoMob"
+                      onerror="this.style.display='none'"
+                    />
+                  </div>
+                </div>
+                <div class="qris-bottom-price">
+                  <div class="qris-price-label">Total Pembayaran</div>
+                  <div class="qris-price-value" id="qrisTotalMob">Rp 0</div>
+                </div>
+              </div>
+
+              <div
+                class="upload-btn-modern"
+                id="uploadBoxMob"
+                onclick="triggerUpload()"
+              >
+                <div class="upload-icon">📸</div>
+                <div class="upload-text-main">Upload Bukti Transfer</div>
+                <div class="upload-text-sub">Klik untuk ambil foto</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sheet-footer-fixed">
+          <div class="rowBetween" style="margin-bottom: 15px; font-size: 20px">
+            <b>Total Tagihan</b>
+            <b style="color: var(--primary)" id="totalMobVal">Rp 0</b>
+          </div>
+          <button
+            class="btn primary full"
+            style="padding: 16px; font-size: 16px; border-radius: 16px"
+            id="btnPayMob"
+            onclick="processCheckout()"
+          >
+            Bayar Tunai
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        addDoc,
+        getDoc,
+        doc,
+        onSnapshot,
+        query,
+        where,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+      import { firebaseConfig } from "../firebase-config.js";
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      // --- UTILS ---
+      const $ = (q) => document.querySelector(q);
+      const $$ = (q) => document.querySelectorAll(q);
+      const rupiah = (n) => "Rp " + (n || 0).toLocaleString("id-ID");
+
+      // --- STATE ---
+      let state = {
+        vendor: null,
+        cart: [],
+        categories: ["Semua"],
+        activeCat: "Semua",
+        searchQuery: "",
+        paymentMethod: "cash",
+        tempProof: null,
+        salesCounts: {},
+      };
+
+      // --- ANIMATION: FLY TO CART ---
+      function animateFly(startEl, targetEl) {
+        if (!startEl || !targetEl) return;
+        const startRect = startEl.getBoundingClientRect();
+        const targetRect = targetEl.getBoundingClientRect();
+
+        const img = document.createElement("img");
+        img.src = startEl.src;
+        img.className = "fly-item";
+        img.style.top = startRect.top + "px";
+        img.style.left = startRect.left + "px";
+        document.body.appendChild(img);
+
+        void img.offsetWidth; // Force reflow
+
+        img.style.top = targetRect.top + targetRect.height / 2 - 30 + "px";
+        img.style.left = targetRect.left + targetRect.width / 2 - 30 + "px";
+        img.style.transform = "scale(0.2)";
+        img.style.opacity = "0.5";
+
+        setTimeout(() => {
+          img.remove();
+        }, 600);
+      }
+
+      // --- INIT ---
+      async function init() {
+        const vid = localStorage.getItem("pikul_seller_id");
+        if (!vid) return (window.location.href = "index.html");
+
+        try {
+          const snap = await getDoc(doc(db, "vendors", vid));
+          if (!snap.exists()) return alert("Vendor error");
+
+          state.vendor = { id: snap.id, ...snap.data() };
+          $("#storeName").textContent = state.vendor.name;
+          $("#authCheck").classList.add("hidden");
+
+          // SET LOGO & NAME FOR QRIS UI
+          const storeLogo =
+            state.vendor.image ||
+            state.vendor.logo ||
+            "https://cdn-icons-png.flaticon.com/512/3514/3514491.png";
+
+          $("#qrisLogoDesk").src = storeLogo;
+          $("#qrisLogoMob").src = storeLogo;
+
+          $("#qrisStoreNameDesk").textContent = state.vendor.name;
+          $("#qrisStoreNameMob").textContent = state.vendor.name;
+
+          if (state.vendor.menu) state.categories = ["Semua"];
+
+          // FETCH BEST SELLERS
+          onSnapshot(
+            query(
+              collection(db, "orders"),
+              where("vendorId", "==", state.vendor.id),
+              where("status", "==", "Selesai")
+            ),
+            (s) => {
+              let counts = {};
+              s.docs.forEach((d) => {
+                const ord = d.data();
+                if (ord.items && Array.isArray(ord.items)) {
+                  ord.items.forEach((item) => {
+                    counts[item.name] = (counts[item.name] || 0) + item.qty;
+                  });
+                }
+              });
+              state.salesCounts = counts;
+              renderMenu();
+            }
+          );
+
+          renderCategories();
+          renderMenu();
+        } catch (e) {
+          console.error(e);
+          alert("Gagal memuat data: " + e.message);
+        }
+      }
+
+      // --- MENU RENDER ---
+      function renderCategories() {
+        $("#catList").innerHTML = state.categories
+          .map(
+            (c) =>
+              `<div class="cat-pill ${
+                state.activeCat === c ? "active" : ""
+              }" onclick="window.setCat('${c}')">${c}</div>`
+          )
+          .join("");
+      }
+      window.setCat = (c) => {
+        state.activeCat = c;
+        renderMenu();
+      };
+      $("#searchMenu").addEventListener("input", (e) => {
+        state.searchQuery = e.target.value.toLowerCase();
+        renderMenu();
+      });
+
+      function renderMenu() {
+        const grid = $("#menuGrid");
+        if (!state.vendor.menu || state.vendor.menu.length === 0) {
+          grid.innerHTML = `<div class="muted" style="grid-column:1/-1; text-align:center; padding:50px;">Belum ada menu. Tambahkan di Dashboard Admin.</div>`;
+          return;
+        }
+
+        const filtered = state.vendor.menu.filter((m) =>
+          m.name.toLowerCase().includes(state.searchQuery)
+        );
+
+        grid.innerHTML = filtered
+          .map((m, idx) => {
+            const soldCount = state.salesCounts[m.name] || 0;
+            const soldBadge =
+              soldCount > 0
+                ? `<div class="badge-sold"><span>🔥</span> ${soldCount} Terjual</div>`
+                : "";
+
+            return `
+            <div class="prod-card" onclick="window.addToCart(${idx}, this)">
+                ${soldBadge}
+                <div class="prod-img-wrapper">
+                    <img src="${
+                      m.image || "https://via.placeholder.com/150?text=Food"
+                    }" class="prod-img" />
+                </div>
+                <div class="prod-title">${m.name}</div>
+                <div class="prod-price">${rupiah(m.price)}</div>
+                <div class="btn-add-overlay">+</div>
+            </div>`;
+          })
+          .join("");
+      }
+
+      // --- CART LOGIC ---
+      window.addToCart = (menuIdx, cardEl) => {
+        const filtered = state.vendor.menu.filter((m) =>
+          m.name.toLowerCase().includes(state.searchQuery)
+        );
+        const item = filtered[menuIdx];
+        const existing = state.cart.find((c) => c.name === item.name);
+        if (existing) existing.qty++;
+        else state.cart.push({ ...item, qty: 1 });
+
+        // ANIMATION
+        const targetDesk = $("#desktopCart");
+        const targetMob = $("#mobCountBadge");
+        const imgEl = cardEl.querySelector(".prod-img");
+
+        if (window.innerWidth > 1024) {
+          animateFly(imgEl, targetDesk);
+        } else {
+          animateFly(imgEl, targetMob);
+          $("#mobileBar").classList.add("pop");
+          setTimeout(() => $("#mobileBar").classList.remove("pop"), 300);
+        }
+
+        renderCart();
+      };
+
+      window.updateQty = (name, delta) => {
+        const idx = state.cart.findIndex((c) => c.name === name);
+        if (idx === -1) return;
+        state.cart[idx].qty += delta;
+        if (state.cart[idx].qty <= 0) state.cart.splice(idx, 1);
+        renderCart();
+      };
+
+      function renderCart() {
+        const total = state.cart.reduce((a, b) => a + b.price * b.qty, 0);
+        const count = state.cart.reduce((a, b) => a + b.qty, 0);
+
+        const html = state.cart
+          .map(
+            (item) => `
+            <div class="cart-item">
+                <div style="flex:1;">
+                    <div style="font-weight:700; font-size:14px; color:#1e293b;">${
+                      item.name
+                    }</div>
+                    <div class="muted" style="font-size:12px;">${rupiah(
+                      item.price
+                    )}</div>
+                </div>
+                <div class="qty-control">
+                    <button class="qty-btn" onclick="window.updateQty('${
+                      item.name
+                    }', -1)">-</button>
+                    <span style="width:24px; text-align:center; font-size:14px; font-weight:700;">${
+                      item.qty
+                    }</span>
+                    <button class="qty-btn" onclick="window.updateQty('${
+                      item.name
+                    }', 1)">+</button>
+                </div>
+            </div>
+        `
+          )
+          .join("");
+
+        const emptyHtml = `<div style="text-align: center; margin-top: 50px; color: #cbd5e1; display:flex; flex-direction:column; align-items:center;">
+            <div style="font-size: 48px; margin-bottom: 10px;">🛒</div>
+            <p style="font-weight: 600;">Keranjang Kosong</p>
+        </div>`;
+
+        $("#cartListDesktop").innerHTML = state.cart.length ? html : emptyHtml;
+        $("#totalDesk").textContent = rupiah(total);
+        $("#itemCountDesk").textContent = count;
+
+        $("#cartListMobile").innerHTML = state.cart.length ? html : emptyHtml;
+        $("#mobCountBadge").textContent = count;
+        $("#mobTotalBadge").textContent = rupiah(total);
+        $("#totalMobVal").textContent = rupiah(total);
+
+        if (state.paymentMethod === "qris") generateQRISDisplay(total);
+
+        if (count > 0) $("#mobileBar").style.display = "flex";
+        else {
+          $("#mobileBar").style.display = "none";
+          window.closeMobileCart();
+        }
+      }
+
+      window.openMobileCart = () =>
+        $("#mobileCartModal").classList.add("active");
+      window.closeMobileCart = () =>
+        $("#mobileCartModal").classList.remove("active");
+
+      // --- PAYMENT & QRIS ---
+      window.setPaymentMethod = (method) => {
+        state.paymentMethod = method;
+        const total = state.cart.reduce((a, b) => a + b.price * b.qty, 0);
+        $$(".pay-tab").forEach((el) => el.classList.remove("active"));
+
+        if (method === "cash") {
+          $("#tabCashDesk").classList.add("active");
+          $("#tabCashMob").classList.add("active");
+          $("#qrisSectionDesk").classList.add("hidden");
+          $("#qrisSectionMob").classList.add("hidden");
+          $("#btnPayDesk").textContent = "Bayar Tunai";
+          $("#btnPayMob").textContent = "Bayar Tunai";
+        } else {
+          $("#tabQrisDesk").classList.add("active");
+          $("#tabQrisMob").classList.add("active");
+          $("#qrisSectionDesk").classList.remove("hidden");
+          $("#qrisSectionMob").classList.remove("hidden");
+          $("#btnPayDesk").textContent = "Verifikasi & Selesai";
+          $("#btnPayMob").textContent = "Verifikasi & Selesai";
+          generateQRISDisplay(total);
+        }
+      };
+
+      function generateCRC16(str) {
+        let crc = 0xffff;
+        for (let c = 0; c < str.length; c++) {
+          crc ^= str.charCodeAt(c) << 8;
+          for (let i = 0; i < 8; i++) {
+            if (crc & 0x8000) crc = (crc << 1) ^ 0x1021;
+            else crc = crc << 1;
+          }
+        }
+        let hex = (crc & 0xffff).toString(16).toUpperCase();
+        return hex.padStart(4, "0");
+      }
+
+      function createDynamicQRIS(rawString, amount) {
+        if (!rawString || rawString.length < 20) return rawString;
+        let qris = rawString.trim();
+        let newString = "";
+        let i = 0;
+        let addedAmount = false;
+
+        while (i < qris.length) {
+          if (i + 4 > qris.length) break;
+          let tag = qris.substring(i, i + 2);
+          let lenStr = qris.substring(i + 2, i + 4);
+          let len = parseInt(lenStr, 10);
+          if (isNaN(len) || i + 4 + len > qris.length) break;
+          let value = qris.substring(i + 4, i + 4 + len);
+
+          if (tag === "63") break;
+
+          if (tag === "01") value = "12";
+          if (tag === "54") {
+            i += 4 + len;
+            continue;
+          }
+          if (tag === "58" && !addedAmount) {
+            let amtStr = Math.floor(amount).toString();
+            let amtLen = amtStr.length.toString().padStart(2, "0");
+            newString += "54" + amtLen + amtStr;
+            addedAmount = true;
+          }
+          newString += tag + lenStr.padStart(2, "0") + value;
+          i += 4 + len;
+        }
+        if (!addedAmount) {
+          let amtStr = Math.floor(amount).toString();
+          let amtLen = amtStr.length.toString().padStart(2, "0");
+          newString += "54" + amtLen + amtStr;
+        }
+        newString += "6304";
+        let crc = generateCRC16(newString);
+        return newString + crc;
+      }
+
+      function generateQRISDisplay(amount) {
+        const containers = [
+          {
+            div: $("#qrisCanvasDesk"),
+            total: $("#qrisTotalDesk"),
+            wrapper: $("#qrisWrapperDesk"),
+            logo: $("#qrisLogoDesk"),
+          },
+          {
+            div: $("#qrisCanvasMob"),
+            total: $("#qrisTotalMob"),
+            wrapper: $("#qrisWrapperMob"),
+            logo: $("#qrisLogoMob"),
+          },
+        ];
+
+        const qrString = state.vendor.qrisData || state.vendor.qris_data;
+        const qrImageUrl =
+          state.vendor.qrisImage ||
+          state.vendor.qris_image ||
+          state.vendor.qrisUrl;
+        let generated = false;
+
+        containers.forEach((c) => {
+          c.total.textContent = rupiah(amount);
+          c.div.innerHTML = "";
+        });
+
+        if (qrString && amount > 0) {
+          try {
+            const dynamicQR = createDynamicQRIS(qrString, amount);
+            containers.forEach((c) => {
+              // Resize QR for better view inside card
+              new QRCode(c.div, {
+                text: dynamicQR,
+                width: 220,
+                height: 220,
+                correctLevel: QRCode.CorrectLevel.L,
+              });
+              c.logo.style.display = "block";
+            });
+            generated = true;
+          } catch (e) {
+            console.error("QR Error:", e);
+          }
+        }
+
+        if (!generated && qrImageUrl) {
+          containers.forEach((c) => {
+            c.div.innerHTML = `<img src="${qrImageUrl}" class="static-qris" style="width:100%; height:100%; object-fit:contain;">`;
+            c.logo.style.display = "none";
+          });
+          generated = true;
+        }
+
+        if (!generated) {
+          containers.forEach(
+            (c) =>
+              (c.div.innerHTML =
+                "<div style='color:red; padding:20px;'>QRIS Tidak Tersedia</div>")
+          );
+        }
+      }
+
+      // --- CHECKOUT ---
+      window.triggerUpload = () => $("#proofInput").click();
+      window.handleProofUpload = async (input) => {
+        if (input.files[0]) {
+          const boxes = [$("#uploadBoxDesk"), $("#uploadBoxMob")];
+          boxes.forEach((b) => {
+            b.style.background = "#fff7ed";
+            b.querySelector(".upload-text-main").textContent =
+              "⏳ Mengompres...";
+          });
+
+          const reader = new FileReader();
+          reader.readAsDataURL(input.files[0]);
+          reader.onload = (e) => {
+            state.tempProof = e.target.result;
+
+            // Update Button Style to Done
+            boxes.forEach((b) => {
+              b.className = "upload-btn-modern done";
+              b.querySelector(".upload-icon").textContent = "✅";
+              b.querySelector(".upload-text-main").textContent =
+                "Bukti Tersimpan";
+              b.querySelector(".upload-text-sub").textContent =
+                "Klik untuk ganti";
+            });
+          };
+        }
+      };
+
+      window.processCheckout = async () => {
+        if (state.cart.length === 0) return alert("Keranjang kosong!");
+        if (state.paymentMethod === "qris" && !state.tempProof)
+          return alert("⚠️ WAJIB upload foto bukti QRIS.");
+
+        const total = state.cart.reduce((a, b) => a + b.price * b.qty, 0);
+        if (!confirm(`Selesaikan transaksi senilai ${rupiah(total)}?`)) return;
+
+        try {
+          await addDoc(collection(db, "orders"), {
+            vendorId: state.vendor.id,
+            vendorName: state.vendor.name,
+            userName: "Walk-in Customer",
+            userPhone: "-",
+            userId: "GUEST",
+            items: state.cart,
+            total: total,
+            status: "Selesai",
+            paymentMethod: state.paymentMethod,
+            paymentProof: state.tempProof || null,
+            isPaymentVerified: true,
+            createdAt: new Date().toISOString(),
+            rating: 0,
+          });
+
+          alert("✅ Transaksi Sukses!");
+          state.cart = [];
+          state.tempProof = null;
+
+          // Reset Upload Button
+          const boxes = [$("#uploadBoxDesk"), $("#uploadBoxMob")];
+          boxes.forEach((b) => {
+            b.className = "upload-btn-modern";
+            b.querySelector(".upload-icon").textContent = "📸";
+            b.querySelector(".upload-text-main").textContent =
+              "Upload Bukti Transfer";
+            b.querySelector(".upload-text-sub").textContent =
+              "Klik untuk ambil foto";
+          });
+
+          setPaymentMethod("cash");
+          renderCart();
+          window.closeMobileCart();
+        } catch (e) {
+          alert("Gagal: " + e.message);
+        }
+      };
+
+      init();
+    </script>
+  </body>
+</html>

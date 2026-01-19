@@ -1,0 +1,23 @@
+{
+  "name": "Kasir - PIKUL Mitra",
+  "short_name": "Kasir",
+  "start_url": "./kasir.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ff7a00",
+  "orientation": "portrait",
+  "scope": "./",
+  "icons": [
+    {
+      "src": "../Kasir.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "../Kasir.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

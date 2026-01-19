@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="PIKUL" />
+    <link rel="apple-touch-icon" href="../pikul.jpeg" />
+    <title>PIKUL - Super Admin</title>
+    <link rel="icon" type="image/jpeg" href="../Admin-Pikul.png" />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* --- GLOBAL STYLES --- */
+      :root {
+        --primary: #ff7a00;
+        --bg: #f8fafc;
+        --text: #1e293b;
+        --muted: #64748b;
+        --border: #e2e8f0;
+      }
+
+      /* --- MOBILE BOTTOM NAV (NEW) --- */
+      .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 10px 0;
+        z-index: 1000;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+      }
+
+      .nav-item {
+        background: transparent;
+        border: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        color: var(--muted);
+        font-family: "Inter", sans-serif;
+        font-size: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 60px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+      }
+
+      .nav-icon {
+        font-size: 20px;
+        margin-bottom: 2px;
+        transition: transform 0.3s;
+      }
+
+      .nav-item.active {
+        color: var(--primary);
+      }
+
+      .nav-item.active .nav-icon {
+        transform: translateY(-2px);
+      }
+
+      /* Active Indicator Dot */
+      .nav-item.active::after {
+        content: "";
+        position: absolute;
+        bottom: -5px; /* Adjust based on padding */
+        width: 4px;
+        height: 4px;
+        background: var(--primary);
+        border-radius: 50%;
+      }
+
+      /* Hide Desktop Sidebar on Mobile */
+      @media (max-width: 768px) {
+        .sidebar {
+          display: none !important;
+        }
+        .main {
+          margin-left: 0 !important;
+          padding-bottom: 80px;
+        } /* Add padding for bottom nav */
+        .header.desktop-only {
+          display: none;
+        }
+      }
+
+      /* Hide Bottom Nav on Desktop */
+      @media (min-width: 769px) {
+        .bottom-nav {
+          display: none;
+        }
+      }
+
+      /* --- EXISTING STYLES --- */
+      .section-title {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 12px;
+        letter-spacing: 1px;
+      }
+      .kpi {
+        border: none;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s;
+      }
+      .kpi:hover {
+        transform: translateY(-3px);
+      }
+      .kpi.money {
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+      }
+      .kpi.money .kpiVal {
+        color: #166534;
+      }
+      .kpi.vendor {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+      }
+      .kpi.vendor .kpiVal {
+        color: #1e40af;
+      }
+      .kpi-icon {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        font-size: 24px;
+        opacity: 0.3;
+      }
+      .trx-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px dashed var(--line);
+      }
+      .trx-item:last-child {
+        border-bottom: none;
+      }
+      .trx-amount {
+        font-weight: 700;
+        color: #166534;
+        background: #dcfce7;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+      }
+      .proof-img-large {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid #eee;
+        margin: 10px 0;
+        max-height: 400px;
+        object-fit: contain;
+        background: #f9f9f9;
+      }
+      .activation-code-box {
+        background: #1e293b;
+        color: #4ade80;
+        font-family: monospace;
+        font-size: 32px;
+        text-align: center;
+        padding: 20px;
+        border-radius: 12px;
+        margin: 20px 0;
+        letter-spacing: 5px;
+        font-weight: 800;
+        border: 2px dashed #4ade80;
+      }
+      .action-row {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .badge-pending {
+        background: #fef3c7;
+        color: #b45309;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .badge-success {
+        background: #dcfce7;
+        color: #166534;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .badge-fail {
+        background: #fee2e2;
+        color: #991b1b;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      /* Mobile Header */
+      .mobile-header {
+        display: none;
+        padding: 16px;
+        background: white;
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 900;
+        align-items: center;
+        justify-content: space-between;
+      }
+      @media (max-width: 768px) {
+        .mobile-header {
+          display: flex;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main id="adminAuth" class="auth">
+      <div class="authCard">
+        <div style="text-align: center; margin-bottom: 24px">
+          <img
+            src="../Admin-Pikul.png"
+            class="brand-logo-lg"
+            alt="Logo Pikul"
+          />
+          <h2 style="margin: 12px 0 4px">Super Admin</h2>
+          <p class="muted" style="margin: 0">Login untuk mengelola sistem.</p>
+        </div>
+        <form id="adminLoginForm" class="form">
+          <div>
+            <label>Username</label
+            ><input id="adminUser" placeholder="admin" required />
+          </div>
+          <div>
+            <label>Password</label
+            ><input
+              id="adminPass"
+              type="password"
+              placeholder="••••••"
+              required
+            />
+          </div>
+          <button class="btn primary" type="submit" style="margin-top: 10px">
+            Masuk Panel
+          </button>
+        </form>
+      </div>
+    </main>
+
+    <div id="adminApp" class="app hidden">
+      <nav class="sidebar">
+        <div class="sbBrand">
+          <img src="../Admin-Pikul.png" class="brand-logo-sm" alt="Logo" />
+          <div class="desktop-only">
+            <b style="font-size: 18px">PIKUL</b>
+            <div class="muted" style="font-size: 12px">Admin Panel</div>
+          </div>
+        </div>
+        <div class="sbNav">
+          <button class="sbItem active" data-tab="Dashboard">
+            <span class="icon">📊</span> <span class="label">Overview</span>
+          </button>
+          <button class="sbItem" data-tab="Topups">
+            <span class="icon">💳</span> <span class="label">Topup User</span>
+          </button>
+          <button class="sbItem" data-tab="Revenue">
+            <span class="icon">💰</span>
+            <span class="label">Validasi Mitra</span>
+          </button>
+          <button class="sbItem" data-tab="Vendors">
+            <span class="icon">🏪</span> <span class="label">Data Mitra</span>
+          </button>
+          <button class="sbItem" data-tab="Orders">
+            <span class="icon">🧾</span>
+            <span class="label">Semua Pesanan</span>
+          </button>
+          <button class="sbItem" data-tab="Banners">
+            <span class="icon">📢</span> <span class="label">Iklan Banner</span>
+          </button>
+        </div>
+        <button id="adminLogoutBtn" class="sbLogout desktop-only">
+          ⎋ Logout
+        </button>
+      </nav>
+
+      <header class="mobile-header">
+        <div style="display: flex; align-items: center; gap: 10px">
+          <img
+            src="../Admin-Pikul.png"
+            style="width: 32px; height: 32px; border-radius: 8px"
+          />
+          <b style="font-size: 16px">Admin Panel</b>
+        </div>
+        <button
+          onclick="location.reload()"
+          style="background: none; border: none; font-size: 20px"
+        >
+          ⎋
+        </button>
+      </header>
+
+      <section class="main">
+        <header class="header desktop-only">
+          <div>
+            <h2 id="pageTitle" style="margin: 0">Dashboard</h2>
+            <div class="muted">Monitoring performa aplikasi real-time.</div>
+          </div>
+        </header>
+
+        <section id="tabDashboard" class="tab">
+          <div class="section-title">🏢 Statistik Platform (Global)</div>
+          <div class="kpiGrid">
+            <div class="kpi">
+              <div class="muted">Total Omzet Vendor</div>
+              <div class="kpiVal" id="kpiGTV">Rp 0</div>
+              <div class="kpi-icon">💸</div>
+            </div>
+            <div class="kpi">
+              <div class="muted">Total Pesanan</div>
+              <div class="kpiVal" id="kpiOrders">0</div>
+              <div class="kpi-icon">📦</div>
+            </div>
+            <div class="kpi vendor">
+              <div class="muted">Total Mitra</div>
+              <div class="kpiVal" id="kpiVendors">0</div>
+              <div class="kpi-icon">🏪</div>
+            </div>
+            <div class="kpi money">
+              <div class="muted">Pendapatan Admin</div>
+              <div class="kpiVal" id="kpiAdminRevenue">Rp 0</div>
+              <div class="kpi-icon">💎</div>
+            </div>
+          </div>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+              gap: 20px;
+              margin-top: 20px;
+            "
+          >
+            <div class="card">
+              <div class="rowBetween">
+                <h3>💎 Pemasukan Terbaru</h3>
+                <small class="muted">Langganan Premium</small>
+              </div>
+              <div id="latestSubs" class="list" style="margin-top: 15px"></div>
+              <button
+                class="btn ghost small"
+                style="width: 100%; margin-top: 10px"
+                onclick="goToRevenue()"
+              >
+                Lihat Semua Transaksi
+              </button>
+            </div>
+            <div class="card">
+              <h3>📦 Pesanan Terakhir</h3>
+              <div
+                id="latestOrders"
+                class="list"
+                style="margin-top: 15px"
+              ></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="tabTopups" class="tab hidden">
+          <div class="card">
+            <div class="rowBetween">
+              <h3>Permintaan Isi Saldo (User)</h3>
+              <div class="muted" style="font-size: 12px">
+                Validasi bukti transfer user di sini.
+              </div>
+            </div>
+            <div class="table-wrapper" style="margin-top: 20px">
+              <div id="topupsTable"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="tabRevenue" class="tab hidden">
+          <div class="card">
+            <div class="rowBetween">
+              <h3>Validasi Pembayaran Mitra</h3>
+              <div
+                class="pill"
+                style="background: #dcfce7; color: #166534; font-size: 14px"
+              >
+                Total: <span id="revTotalDisplay">Rp 0</span>
+              </div>
+            </div>
+            <div class="table-wrapper" style="margin-top: 20px">
+              <div id="revenueTable"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="tabOrders" class="tab hidden">
+          <div class="card">
+            <div class="table-wrapper"><div id="ordersTable"></div></div>
+          </div>
+        </section>
+
+        <section id="tabVendors" class="tab hidden">
+          <div class="card">
+            <div class="rowBetween">
+              <h3>Daftar Mitra</h3>
+              <button id="addVendorBtn" class="btn primary small">
+                + Tambah Manual
+              </button>
+            </div>
+            <div
+              id="vendorAdminList"
+              class="list"
+              style="margin-top: 15px"
+            ></div>
+          </div>
+        </section>
+
+        <section id="tabBanners" class="tab hidden">
+          <div class="card">
+            <div class="rowBetween">
+              <div>
+                <h3>Banner & Iklan</h3>
+                <p class="muted" style="margin: 0; font-size: 12px">
+                  Muncul di halaman Home Customer.
+                </p>
+              </div>
+              <button id="addBannerBtn" class="btn primary small">
+                + Buat Iklan
+              </button>
+            </div>
+            <div
+              id="bannerList"
+              class="list"
+              style="
+                margin-top: 20px;
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 12px;
+              "
+            ></div>
+          </div>
+        </section>
+      </section>
+
+      <nav class="bottom-nav">
+        <button
+          class="nav-item active"
+          onclick="switchTabMobile('Dashboard', this)"
+        >
+          <div class="nav-icon">📊</div>
+          <span>Dash</span>
+        </button>
+        <button class="nav-item" onclick="switchTabMobile('Topups', this)">
+          <div class="nav-icon">💳</div>
+          <span>Topup</span>
+        </button>
+        <button class="nav-item" onclick="switchTabMobile('Revenue', this)">
+          <div class="nav-icon">💰</div>
+          <span>Mitra</span>
+        </button>
+        <button class="nav-item" onclick="switchTabMobile('Vendors', this)">
+          <div class="nav-icon">🏪</div>
+          <span>Data</span>
+        </button>
+        <button class="nav-item" onclick="switchTabMobile('Banners', this)">
+          <div class="nav-icon">📢</div>
+          <span>Iklan</span>
+        </button>
+      </nav>
+    </div>
+
+    <div id="imageModal" class="modal hidden">
+      <div class="overlay" onclick="closeImageModal()"></div>
+      <div class="sheet" style="text-align: center">
+        <div class="sheetHead">
+          <h3>Bukti Transfer</h3>
+          <button class="iconBtn" onclick="closeImageModal()">✕</button>
+        </div>
+        <div class="sheetBody">
+          <img
+            id="imagePreviewFull"
+            src=""
+            style="
+              width: 100%;
+              border-radius: 12px;
+              border: 1px solid #ddd;
+              max-height: 70vh;
+              object-fit: contain;
+            "
+          /><button
+            class="btn primary full"
+            style="margin-top: 16px"
+            onclick="closeImageModal()"
+          >
+            Tutup
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="verificationModal" class="modal hidden">
+      <div class="overlay" data-close="verificationModal"></div>
+      <div class="sheet">
+        <div class="sheetHead">
+          <h3 id="verifTitle">Verifikasi</h3>
+          <button class="iconBtn" data-close="verificationModal">✕</button>
+        </div>
+        <div class="sheetBody"><div id="verifContent"></div></div>
+      </div>
+    </div>
+    <div id="editSubModal" class="modal hidden">
+      <div class="overlay" data-close="editSubModal"></div>
+      <div class="sheet">
+        <div class="sheetHead">
+          <h3>Edit Data Transaksi</h3>
+          <button class="iconBtn" data-close="editSubModal">✕</button>
+        </div>
+        <div class="sheetBody">
+          <form id="editSubForm">
+            <label>Nama Mitra</label
+            ><input
+              id="esName"
+              disabled
+              style="background: #f1f5f9; color: #64748b"
+            /><label>Metode</label
+            ><input
+              id="esMethod"
+              disabled
+              style="background: #f1f5f9; color: #64748b"
+            /><label>Status Pembayaran</label
+            ><select
+              id="esStatus"
+              style="
+                width: 100%;
+                padding: 12px;
+                margin-top: 6px;
+                border-radius: 12px;
+                border: 1px solid #e2e8f0;
+              "
+            >
+              <option value="pending">⏳ Pending (Menunggu Cek)</option>
+              <option value="approved">✅ Approved (Disetujui)</option>
+              <option value="rejected">❌ Rejected (Ditolak)</option>
+              <option value="redeemed">🔑 Redeemed (Sudah Aktif)</option>
+            </select>
+            <div
+              style="
+                background: #fff7ed;
+                padding: 10px;
+                border-radius: 8px;
+                margin-top: 15px;
+                font-size: 12px;
+                color: #c2410c;
+              "
+            >
+              ⚠️ <b>Peringatan:</b> Mengubah status di sini hanya mengubah data
+              pencatatan. Untuk mengaktifkan akun vendor, gunakan tombol
+              "Validasi" di tabel utama.
+            </div>
+            <button class="btn primary full" style="margin-top: 15px">
+              Simpan Perubahan
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div id="orderModal" class="modal hidden">
+      <div class="overlay" data-close="orderModal"></div>
+      <div class="sheet">
+        <div class="sheetHead">
+          <h3>Update Status</h3>
+          <button class="iconBtn" data-close="orderModal">✕</button>
+        </div>
+        <div class="sheetBody">
+          <div id="ordItems" class="list" style="margin-bottom: 15px"></div>
+          <select id="ordStatus" style="width: 100%; margin-bottom: 10px">
+            <option>Diproses</option>
+            <option>Dalam perjalanan</option>
+            <option>Selesai</option></select
+          ><button id="saveStatusBtn" class="btn primary" style="width: 100%">
+            Simpan
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="editVendorModal" class="modal hidden">
+      <div class="overlay" data-close="editVendorModal"></div>
+      <div class="sheet">
+        <div class="sheetHead">
+          <h3>Edit Vendor</h3>
+          <button class="iconBtn" data-close="editVendorModal">✕</button>
+        </div>
+        <div class="sheetBody">
+          <form id="editVendorForm">
+            <label>Nama Vendor</label><input id="evName" required /><label
+              >Tipe</label
+            ><input id="evType" required /><label>Rating</label
+            ><input id="evRating" type="number" step="0.1" required /><button
+              class="btn primary"
+              style="width: 100%; margin-top: 20px"
+            >
+              Simpan
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div id="bannerModal" class="modal hidden">
+      <div class="overlay" data-close="bannerModal"></div>
+      <div class="sheet">
+        <div class="sheetHead">
+          <h3>Buat Promo</h3>
+          <button class="iconBtn" data-close="bannerModal">✕</button>
+        </div>
+        <div class="sheetBody">
+          <form id="bannerForm">
+            <div style="margin-bottom: 20px">
+              <label>Preview</label>
+              <div id="bannerPreview" class="banner-preview">
+                <div class="preview-content">
+                  <span class="pill-preview" id="prevVendor">Info Promo</span>
+                  <h2 id="prevTitle">Judul</h2>
+                  <p id="prevDesc">Ket...</p>
+                </div>
+                <div class="preview-decor"></div>
+              </div>
+            </div>
+            <div
+              style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px"
+            >
+              <div>
+                <label>Judul</label
+                ><input
+                  id="bnTitle"
+                  placeholder="Diskon"
+                  required
+                  oninput="updatePreviewText()"
+                />
+              </div>
+              <div>
+                <label>Sub</label
+                ><input
+                  id="bnDesc"
+                  placeholder="Ket"
+                  required
+                  oninput="updatePreviewText()"
+                />
+              </div>
+            </div>
+            <label style="margin-top: 15px">Vendor (Opsional)</label
+            ><select id="bnVendor" onchange="updatePreviewText()">
+              <option value="">-- Umum --</option></select
+            ><label style="margin-top: 20px">Background</label>
+            <div class="color-tabs">
+              <button
+                type="button"
+                class="tab-btn active"
+                onclick="switchColorTab('template')"
+              >
+                Template</button
+              ><button
+                type="button"
+                class="tab-btn"
+                onclick="switchColorTab('custom')"
+              >
+                Custom
+              </button>
+            </div>
+            <div id="tabColorTemplate" class="color-panel">
+              <div class="preset-grid">
+                <div
+                  class="preset-item"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      #ff9a9e 0%,
+                      #fecfef 100%
+                    );
+                  "
+                  onclick="selectPreset(this)"
+                ></div>
+                <div
+                  class="preset-item"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      #a18cd1 0%,
+                      #fbc2eb 100%
+                    );
+                  "
+                  onclick="selectPreset(this)"
+                ></div>
+                <div
+                  class="preset-item"
+                  style="background: linear-gradient(135deg, #ff7a00, #ff4d00)"
+                  onclick="selectPreset(this)"
+                ></div>
+                <div
+                  class="preset-item"
+                  style="background: linear-gradient(135deg, #11998e, #38ef7d)"
+                  onclick="selectPreset(this)"
+                ></div>
+              </div>
+            </div>
+            <div id="tabColorCustom" class="color-panel hidden">
+              <div class="rowBetween">
+                <div>
+                  <label>Warna 1</label
+                  ><input
+                    type="color"
+                    id="color1"
+                    value="#ff7a00"
+                    oninput="updateCustomGradient()"
+                  />
+                </div>
+                <div>
+                  <label>Warna 2</label
+                  ><input
+                    type="color"
+                    id="color2"
+                    value="#ff4d00"
+                    oninput="updateCustomGradient()"
+                  />
+                </div>
+              </div>
+            </div>
+            <input
+              type="hidden"
+              id="finalColor"
+              value="linear-gradient(135deg, #ff7a00, #ff4d00)"
+            /><button
+              class="btn primary"
+              style="width: 100%; margin-top: 20px; padding: 14px"
+            >
+              Pasang Iklan
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="admin.js"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          // Sesuaikan path sw.js tergantung lokasi file HTML
+          // Jika di root (index.html): "./sw.js"
+          // Jika di dalam folder (seller/index.html): "../sw.js"
+
+          const swPath =
+            window.location.pathname.includes("/seller/") ||
+            window.location.pathname.includes("/admin/")
+              ? "../sw.js"
+              : "./sw.js";
+
+          navigator.serviceWorker
+            .register(swPath)
+            .then((reg) =>
+              console.log("PWA Service Worker Registered!", reg.scope)
+            )
+            .catch((err) => console.log("PWA Error:", err));
+        });
+      }
+    </script>
+  </body>
+</html>

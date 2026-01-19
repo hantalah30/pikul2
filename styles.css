@@ -1,0 +1,1216 @@
+:root {
+  /* Colors */
+  --orange: #ff7a00;
+  --orange2: #ff9a3d;
+  --bg: #ffffff;
+  --text: #171717;
+  --text-muted: #6b6b6b;
+  --card-bg: #ffffff;
+  --border: #eeeeee;
+  --input-bg: #f9f9f9;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --r: 16px;
+  --nav-height: 70px; /* Tinggi Bottom Nav Mobile */
+}
+
+/* Dark Mode */
+[data-theme="dark"] {
+  --bg: #121212;
+  --text: #e0e0e0;
+  --text-muted: #9ca3af;
+  --card-bg: #1e1e1e;
+  --border: #2e2e2e;
+  --input-bg: #2a2a2a;
+  --chat-bg: #0f0f0f;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  font-family: "Inter", system-ui, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  transition: background 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+
+.hidden {
+  display: none !important;
+}
+.muted {
+  color: var(--text-muted);
+}
+.big {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* --- LAYOUT UTAMA --- */
+.app {
+  display: flex;
+  flex-direction: column; /* Default Mobile: Stack Vertical */
+  height: 100%;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+/* Update class .content di styles.css */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  /* Gunakan padding-top 80px agar konten tidak tertutup header di HP */
+  padding: 80px 20px 100px 20px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+/* --- STYLE BARU UNTUK HALAMAN PROFILE --- */
+.profile-menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.profile-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.profile-menu-item:hover {
+  background: var(--input-bg);
+}
+
+.p-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 122, 0, 0.1);
+  color: var(--orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  margin-right: 12px;
+}
+
+/* --- PERBAIKAN DESKTOP (Agar Padding tidak terlalu besar di PC) --- */
+@media (min-width: 768px) {
+  .content {
+    /* Padding normal untuk Desktop */
+    padding: 30px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
+
+/* --- COMPONENTS --- */
+.topbar {
+  flex-shrink: 0;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 50;
+}
+
+.card,
+.vendorCard,
+.listItem {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 14px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+}
+.vendorCard {
+  display: flex;
+  gap: 12px;
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+.vendorCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+.vIco {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(255, 122, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.rowBetween {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn {
+  border: none;
+  cursor: pointer;
+  border-radius: 12px;
+  padding: 12px;
+  font-weight: 700;
+  transition: 0.2s;
+  font-size: 14px;
+}
+.btn.primary {
+  background: var(--orange);
+  color: #fff;
+}
+.btn.primary:hover {
+  opacity: 0.9;
+}
+.btn.ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.btn.ghost:hover {
+  background: var(--input-bg);
+}
+.btn.small {
+  padding: 8px 14px;
+  font-size: 12px;
+  border-radius: 8px;
+}
+.iconBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  color: var(--text);
+  outline: none;
+  font-size: 14px;
+}
+
+/* --- NAVIGATION (MOBILE DEFAULT) --- */
+.bottomNav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--card-bg);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  height: var(--nav-height);
+  z-index: 100;
+  padding-bottom: 17px;
+}
+.nav {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+}
+.nav.active {
+  color: var(--orange);
+}
+.nav span {
+  display: block;
+}
+.nav-icon {
+  font-size: 18px;
+  margin-bottom: 2px;
+}
+
+/* --- SPECIFIC SCREENS --- */
+
+/* Home Grid for Desktop */
+#vendorList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Promo Slider */
+.promo-slider {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  scrollbar-width: none;
+}
+.promo-card {
+  min-width: 260px;
+  height: 120px;
+  border-radius: 18px;
+  padding: 16px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.promo-bg {
+  position: absolute;
+  right: -10px;
+  bottom: -10px;
+  font-size: 80px;
+  opacity: 0.2;
+  transform: rotate(-10deg);
+}
+
+/* Chat Layout */
+#screenMessages {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0 !important;
+}
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--chat-bg);
+  position: relative;
+  overflow: hidden;
+}
+.chat-bg-pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.06;
+  pointer-events: none;
+  background-image: radial-gradient(#000 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+[data-theme="dark"] .chat-bg-pattern {
+  opacity: 0.1;
+  background-image: radial-gradient(#fff 1px, transparent 1px);
+}
+.chat-header {
+  padding: 10px 16px;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+  height: 60px;
+}
+#chatBox {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+  z-index: 1;
+}
+.chat-input-area {
+  padding: 10px 16px;
+  background: var(--card-bg);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  z-index: 2;
+  padding-bottom: max(10px, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--border);
+}
+
+/* Bubbles */
+.bubble {
+  max-width: 80%;
+  padding: 8px 12px;
+  border-radius: 12px;
+  position: relative;
+  font-size: 14px;
+  line-height: 1.4;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2px;
+}
+.bubble:not(.me) {
+  background: var(--card-bg);
+  color: var(--text);
+  border-top-left-radius: 0;
+  align-self: flex-start;
+}
+.bubble.me {
+  background: var(--orange);
+  color: #fff;
+  border-top-right-radius: 0;
+  align-self: flex-end;
+}
+.msg-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  font-size: 10px;
+  margin-top: 2px;
+  opacity: 0.7;
+}
+
+/* Filter Chips */
+.filter-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+  margin-bottom: 12px;
+}
+.filter-chip {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.filter-chip.active {
+  background: var(--orange);
+  color: #fff;
+  border-color: var(--orange);
+}
+
+/* Map Iframe */
+.map-frame {
+  width: 100%;
+  height: 250px;
+  border-radius: 16px;
+  border: none;
+  background: #eee;
+  display: block;
+}
+
+/* Modal & Toast & Auth */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: none;
+  transition: 0.3s;
+}
+.modal.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.modal:not(.hidden) {
+  opacity: 1;
+  pointer-events: auto;
+}
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  pointer-events: auto;
+}
+.sheet {
+  position: relative;
+  width: min(500px, 100%);
+  background: var(--card-bg);
+  border-radius: 24px 24px 0 0;
+  padding: 20px;
+  max-height: 85vh;
+  overflow-y: auto;
+  animation: slideUpMobile 0.3s;
+  pointer-events: auto;
+}
+@keyframes slideUpMobile {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.toast {
+  background: #333;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 13px;
+  animation: slideIn 0.3s;
+}
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.auth {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 5000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.authCard {
+  width: min(360px, 90%);
+  background: var(--card-bg);
+  padding: 24px;
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+#splash {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 6000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s;
+}
+
+/* ========================================= */
+/* 🖥️ DESKTOP RESPONSIVE BREAKPOINT (>768px) */
+/* ========================================= */
+@media (min-width: 768px) {
+  /* Layout: Side by Side */
+  .app {
+    flex-direction: row;
+  }
+
+  /* Navigation: Move to Left Sidebar */
+  .bottomNav {
+    position: relative;
+    width: 260px;
+    height: 100vh;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 80px 10px 20px 10px; /* Top padding untuk memberi ruang logo virtual */
+    border-top: none;
+    border-right: 1px solid var(--border);
+    bottom: auto;
+  }
+
+  .nav {
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 20px;
+    border-radius: 12px;
+    margin-bottom: 4px;
+    width: 100%;
+    transition: 0.2s;
+  }
+  .nav:hover {
+    background: var(--input-bg);
+  }
+  .nav.active {
+    background: rgba(255, 122, 0, 0.1);
+    color: var(--orange);
+  }
+  .nav span {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .nav-icon {
+    font-size: 20px;
+  }
+
+  /* Logo adjustment for Desktop Sidebar look */
+  .topbar {
+    display: none;
+  } /* Hide mobile topbar */
+  /* We will inject a Desktop sidebar header via CSS pseudoelement or HTML structure, but simpler to just keep topbar hidden and assume Sidebar is enough navigation */
+
+  /* Content: Main Area */
+  .content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 40px;
+    padding-bottom: 30px; /* No bottom nav spacing needed */
+  }
+
+  /* Grid Layouts for Desktop */
+  #vendorList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  #menuList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  /* Map: Larger */
+  .map-frame {
+    height: 400px;
+  }
+
+  /* Modal: Center Popup instead of Bottom Sheet */
+  .modal {
+    align-items: center;
+  }
+  .sheet {
+    width: 500px;
+    max-height: 80vh;
+    border-radius: 24px;
+    animation: zoomIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .sheet-header {
+    position: sticky;
+    top: 0;
+    background: var(--card-bg);
+    z-index: 10;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .menu-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px dashed var(--border);
+    animation: fadeIn 0.3s;
+  }
+  .menu-thumb {
+    width: 60px;
+    height: 60px;
+    background: var(--input-bg);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+  .menu-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .menu-title {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+  .menu-price {
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+  .menu-add-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--orange);
+    color: var(--orange);
+    background: transparent;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+  }
+  .menu-add-btn:active {
+    background: var(--orange);
+    color: #fff;
+    transform: scale(0.9);
+  }
+  @keyframes zoomIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Promo Cards: More visible */
+  .promo-card {
+    min-width: 300px;
+    height: 160px;
+  }
+
+  /* Chat: Centered & Boxed */
+  #screenMessages {
+    padding: 20px !important;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .chat-container {
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* Tab Switcher (Segmented Control) */
+.segment-control {
+  display: flex;
+  background: var(--input-bg);
+  padding: 4px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+}
+.segment-btn {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+  border: none;
+}
+.segment-btn.active {
+  background: var(--card-bg);
+  color: var(--text);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  font-weight: 700;
+}
+
+/* Order Card "Ticket" Style */
+.order-card {
+  background: var(--card-bg);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  position: relative;
+  transition: transform 0.2s;
+}
+.order-card:active {
+  transform: scale(0.98);
+}
+
+.oc-header {
+  padding: 16px;
+  border-bottom: 1px dashed var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(128, 128, 128, 0.02);
+}
+.oc-body {
+  padding: 16px;
+}
+.oc-footer {
+  padding: 12px 16px;
+  background: var(--input-bg);
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+}
+
+/* Visual Stepper Compact */
+.step-compact {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  background: rgba(255, 122, 0, 0.05);
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 122, 0, 0.1);
+}
+.step-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--orange);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 122, 0, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(255, 122, 0, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 122, 0, 0);
+  }
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  opacity: 0.7;
+}
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 10px;
+  display: block;
+  opacity: 0.5;
+}
+
+/* Status Badges */
+.badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.badge.green {
+  background: #dcfce7;
+  color: #166534;
+}
+.badge.blue {
+  background: #dbeafe;
+  color: #1e40af;
+}
+.badge.orange {
+  background: #ffedd5;
+  color: #9a3412;
+}
+
+[data-theme="dark"] .badge.green {
+  background: #14532d;
+  color: #bbf7d0;
+}
+[data-theme="dark"] .badge.blue {
+  background: #1e3a8a;
+  color: #bfdbfe;
+}
+[data-theme="dark"] .badge.orange {
+  background: #7c2d12;
+  color: #fed7aa;
+}
+
+/* FLOATING ACTION BUTTON (CART) */
+.fab-cart {
+  position: fixed;
+  bottom: 90px; /* Di atas Bottom Nav */
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  background: var(--orange);
+  border-radius: 50%;
+  box-shadow: 0 4px 14px rgba(255, 122, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 24px;
+  z-index: 900; /* Di atas konten, di bawah modal */
+  cursor: pointer;
+  transition: transform 0.2s;
+  border: none;
+}
+.fab-cart:active {
+  transform: scale(0.9);
+}
+.fab-cart.hidden {
+  display: none;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #ef4444;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  height: 20px;
+  min-width: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--bg);
+}
+
+/* CART ITEM EDITABLE STYLE */
+.cart-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px dashed var(--border);
+  background: var(--input-bg);
+  border-radius: 12px;
+  margin-bottom: 8px;
+}
+.cart-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--card-bg);
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.ctrl-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: none;
+  background: #eee;
+  color: #333;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ctrl-btn.add {
+  background: var(--orange);
+  color: #fff;
+}
+.ctrl-qty {
+  font-size: 13px;
+  font-weight: 600;
+  min-width: 16px;
+  text-align: center;
+}
+
+/* Desktop adjustments */
+@media (min-width: 768px) {
+  .fab-cart {
+    bottom: 30px;
+    right: 30px;
+    width: 64px;
+    height: 64px;
+  }
+}
+
+/* --- PROMO BANNER ENHANCED --- */
+
+/* ... Style Dasar (Colors, Layout, Buttons, dll sama seperti sebelumnya) ... */
+
+/* --- TAMBAHAN PROMO BANNER --- */
+.promo-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+.promo-slider {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 4px 4px 20px 4px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.promo-slider::-webkit-scrollbar {
+  display: none;
+}
+.promo-card {
+  min-width: 90%;
+  height: 150px;
+  border-radius: 24px;
+  padding: 20px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  scroll-snap-align: center;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+}
+.promo-card:active {
+  transform: scale(0.97);
+}
+.promo-content {
+  position: relative;
+  z-index: 2;
+}
+.promo-tag {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: inline-block;
+  margin-bottom: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.promo-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0 0 4px 0;
+  line-height: 1.2;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.promo-desc {
+  font-size: 13px;
+  opacity: 0.9;
+  margin: 0;
+}
+.promo-decor {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  z-index: 1;
+}
+.decor-1 {
+  width: 100px;
+  height: 100px;
+  top: -20px;
+  right: -20px;
+}
+.decor-2 {
+  width: 60px;
+  height: 60px;
+  bottom: 20px;
+  right: 40px;
+}
+.promo-icon-bg {
+  position: absolute;
+  right: -10px;
+  bottom: -15px;
+  font-size: 100px;
+  opacity: 0.15;
+  transform: rotate(-15deg);
+  z-index: 0;
+}
+.promo-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-25deg);
+  animation: shimmer 3s infinite;
+  z-index: 3;
+  pointer-events: none;
+}
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  20% {
+    left: 200%;
+  }
+  100% {
+    left: 200%;
+  }
+}
+.promo-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: -10px;
+  margin-bottom: 16px;
+}
+.dot {
+  width: 6px;
+  height: 6px;
+  background: var(--border);
+  border-radius: 50%;
+  transition: all 0.3s;
+}
+.dot.active {
+  width: 18px;
+  background: var(--orange);
+  border-radius: 10px;
+}
+@media (min-width: 768px) {
+  .promo-card {
+    min-width: 350px;
+    height: 180px;
+  }
+}
+/* ... Sisanya sama ... */
+
+/* --- NEAREST VENDOR HIGHLIGHT --- */
+.listItem.nearest {
+  background: #f0fdf4; /* Hijau muda lembut */
+  border: 1px solid #22c55e;
+  position: relative;
+}
+.listItem.nearest::after {
+  content: "Terdekat";
+  position: absolute;
+  top: -8px;
+  right: 10px;
+  background: #22c55e;
+  color: white;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+/* --- BEST SELLER BADGES --- */
+.badge-sold-container {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.badge-sold {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #fff7ed;
+  color: #ea580c;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #ffedd5;
+}
+
+.badge-best-seller {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(245, 158, 11, 0.3);
+}
+
+/* --- VOUCHER INPUT STYLES --- */
+.voucher-container {
+  display: flex;
+  gap: 8px;
+  margin: 15px 0;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.voucher-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+}
+
+.btn-voucher {
+  background: #333;
+  color: white;
+  border: none;
+  padding: 0 15px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.discount-row {
+  color: #16a34a; /* Green */
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.total-strikethrough {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 0.9em;
+  margin-right: 5px;
+}

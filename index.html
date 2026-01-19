@@ -1,0 +1,2100 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="PIKUL" />
+
+    <title>PIKUL - Aplikasi Jajan Kuliner & Makanan Kaki Lima</title>
+
+    <meta
+      name="description"
+      content="Aplikasi PIKUL membantu kamu mencari pedagang kaki lima terdekat, pesan makanan online, dan bayar dengan mudah lewat HP. Solusi jajan enak anti ribet."
+    />
+
+    <meta
+      name="keywords"
+      content="pikul, aplikasi pikul, jajan kaki lima, pesan makanan online, kuliner terdekat, pedagang keliling"
+    />
+
+    <meta name="robots" content="index, follow" />
+    <meta
+      name="google-site-verification"
+      content="ZBxYK0tKfYTxbsq4QJrqzeoznEAdRnbCTWGyATpCSWM"
+    />
+
+    <link rel="canonical" href="https://pikul.pages.dev/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://pikul.pages.dev/" />
+    <meta property="og:title" content="PIKUL - Jajan Enak, Gak Pake Ribet!" />
+    <meta
+      property="og:description"
+      content="Lapar? Temukan pedagang kaki lima terdekat, pesan lewat HP, dan nikmati makanannya."
+    />
+    <meta property="og:image" content="https://pikul.pages.dev/pikul.jpeg" />
+
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://pikul.pages.dev/" />
+    <meta property="twitter:title" content="PIKUL - Jajan Enak" />
+    <meta
+      property="twitter:description"
+      content="Lapar? Temukan pedagang kaki lima terdekat, pesan lewat HP."
+    />
+    <meta
+      property="twitter:image"
+      content="https://pikul.pages.dev/pikul.jpeg"
+    />
+
+    <link rel="icon" type="image/jpeg" href="pikul.jpeg" />
+    <link rel="icon" type="image/jpeg" href="pikul.jpeg" />
+    <link rel="apple-touch-icon" href="pikul.jpeg" />
+    <title>PIKUL - Jajan Aman</title>
+    <link rel="icon" type="image/jpeg" href="pikul.jpeg" />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      crossorigin=""
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+      :root {
+        --primary: #ff7a00;
+        --primary-dark: #c2410c;
+        --bg: #f8fafc;
+        --border: #e2e8f0;
+        --text: #1e293b;
+        --text-muted: #64748b;
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      body {
+        margin: 0;
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background: var(--bg);
+        height: 100vh;
+        overflow: hidden;
+        color: var(--text);
+      }
+
+      /* --- AUTH STYLES --- */
+      .auth-page {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        background: white;
+        z-index: 2000;
+        position: relative;
+      }
+      .auth-visual {
+        flex: 1.2;
+        background: linear-gradient(135deg, #ff7a00, #ff9a3d);
+        position: relative;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        padding: 60px;
+        color: white;
+        overflow: hidden;
+      }
+      .auth-visual::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url("https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1000&auto=format&fit=crop");
+        background-size: cover;
+        background-position: center;
+        opacity: 0.2;
+        mix-blend-mode: multiply;
+      }
+      .visual-content {
+        position: relative;
+        z-index: 2;
+        max-width: 500px;
+      }
+      .visual-content h1 {
+        font-size: 52px;
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 20px;
+        letter-spacing: -1px;
+      }
+      .visual-content p {
+        font-size: 18px;
+        line-height: 1.6;
+        opacity: 0.95;
+        font-weight: 500;
+      }
+
+      .auth-form-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        background: white;
+        overflow-y: auto;
+        height: 100%;
+      }
+      @media (min-height: 700px) {
+        .auth-form-container {
+          justify-content: center;
+        }
+      }
+
+      .auth-card {
+        width: 100%;
+        max-width: 420px;
+        padding: 10px 0;
+      }
+      .brand-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 30px;
+      }
+      .brand-logo {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        object-fit: cover;
+      }
+      .brand-text {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--text);
+        letter-spacing: -0.5px;
+      }
+      .auth-title {
+        font-size: 32px;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 8px;
+        letter-spacing: -0.5px;
+      }
+      .auth-subtitle {
+        color: var(--text-muted);
+        margin-bottom: 32px;
+        font-size: 16px;
+      }
+      .input-group {
+        margin-bottom: 20px;
+      }
+      .input-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 8px;
+      }
+      .input-field {
+        width: 100%;
+        padding: 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 14px;
+        font-size: 15px;
+        outline: none;
+        transition: 0.2s;
+        background: #f8fafc;
+        color: #334155;
+        box-sizing: border-box;
+        font-family: inherit;
+      }
+      .input-field:focus {
+        border-color: var(--primary);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(255, 122, 0, 0.1);
+      }
+      .btn-auth {
+        width: 100%;
+        padding: 16px;
+        border: none;
+        border-radius: 14px;
+        background: var(--primary);
+        color: white;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.2s;
+        margin-top: 10px;
+        box-shadow: 0 4px 15px rgba(255, 122, 0, 0.2);
+      }
+      .btn-auth:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+      }
+      .switch-text {
+        text-align: center;
+        margin-top: 24px;
+        color: #64748b;
+        font-size: 14px;
+      }
+      .switch-link {
+        color: var(--primary);
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: none;
+        margin-left: 4px;
+      }
+
+      .auth-extra-actions {
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px dashed #e2e8f0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .btn-guest {
+        width: 100%;
+        padding: 14px;
+        border: 2px solid #e2e8f0;
+        border-radius: 14px;
+        background: white;
+        color: #64748b;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      .btn-guest:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        background: #fff7ed;
+      }
+      .seller-link-box {
+        text-align: center;
+        font-size: 13px;
+        color: #94a3b8;
+      }
+      .seller-link-box a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .seller-link-box a:hover {
+        text-decoration: underline;
+      }
+
+      /* --- APP LAYOUT --- */
+      .app {
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .bottomNav {
+        position: fixed;
+        z-index: 1000;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        transition: transform 0.3s ease-in-out;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+      }
+      .nav-hidden {
+        transform: translate(-50%, 150%) !important;
+      }
+
+      /* MOBILE NAV */
+      @media (max-width: 767px) {
+        .bottomNav {
+          bottom: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 90%;
+          max-width: 400px;
+          height: 70px;
+          border-radius: 24px;
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+          padding: 0 10px;
+        }
+        .nav {
+          background: transparent;
+          border: none;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          color: #94a3b8;
+          font-family: inherit;
+          font-size: 10px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s;
+          width: 50px;
+          height: 50px;
+          border-radius: 16px;
+          position: relative;
+        }
+        .nav span:first-child {
+          font-size: 22px;
+          margin-bottom: 2px;
+          transition: transform 0.3s;
+          filter: grayscale(1);
+        }
+        .nav span:last-child {
+          opacity: 0;
+          transform: translateY(10px);
+          transition: all 0.3s;
+          position: absolute;
+          bottom: 8px;
+        }
+        .nav.active {
+          color: var(--primary);
+          background: rgba(255, 122, 0, 0.1);
+          transform: translateY(-5px);
+          box-shadow: 0 5px 15px rgba(255, 122, 0, 0.15);
+        }
+        .nav.active span:first-child {
+          transform: translateY(-8px) scale(1.1);
+          filter: grayscale(0);
+        }
+        .nav.active span:last-child {
+          opacity: 1;
+          transform: translateY(14px);
+          font-size: 9px;
+        }
+        .desktop-brand,
+        .auth-visual {
+          display: none;
+        }
+        #mainHeader {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 60px;
+          z-index: 900;
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(10px);
+          border-bottom: 1px solid var(--border);
+          transition: transform 0.3s;
+        }
+        .content {
+          margin-top: 60px;
+          height: calc(100vh - 60px);
+          overflow-y: auto;
+          padding: 20px;
+          padding-bottom: 100px;
+          box-sizing: border-box;
+          -webkit-overflow-scrolling: touch;
+        }
+      }
+
+      /* DESKTOP NAV */
+      @media (min-width: 768px) {
+        .auth-visual {
+          display: flex;
+        }
+        .bottomNav {
+          top: 0;
+          left: 0;
+          bottom: 0;
+          width: 260px;
+          height: 100vh;
+          border-radius: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          padding: 32px 20px;
+          background: #ffffff;
+          border-right: 1px solid var(--border);
+          transform: none !important;
+        }
+        .desktop-brand {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 16px;
+          margin-bottom: 48px;
+          padding-left: 12px;
+          width: 100%;
+        }
+        .desktop-brand img {
+          width: 40px !important;
+          height: 40px !important;
+          border-radius: 10px;
+          box-shadow: 0 4px 10px rgba(255, 122, 0, 0.2);
+        }
+        .desktop-brand div {
+          font-size: 20px;
+          color: #1e293b;
+          letter-spacing: -0.5px;
+          font-weight: 800;
+        }
+        .nav {
+          background: transparent;
+          border: none;
+          width: 100%;
+          height: 52px;
+          border-radius: 12px;
+          margin-bottom: 8px;
+          cursor: pointer;
+          color: #64748b;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: flex-start;
+          padding-left: 16px;
+          position: relative;
+          transition: all 0.2s;
+          font-family: inherit;
+          font-weight: 600;
+          font-size: 15px;
+        }
+        .nav span:first-child {
+          font-size: 20px;
+          margin-right: 16px;
+          width: 24px;
+          text-align: center;
+        }
+        .nav:hover {
+          background: #f8fafc;
+          color: var(--primary);
+          transform: translateX(5px);
+        }
+        .nav.active {
+          background: #fff7ed;
+          color: var(--primary);
+        }
+        .nav.active::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          height: 60%;
+          width: 4px;
+          background: var(--primary);
+          border-radius: 0 4px 4px 0;
+        }
+        #app {
+          padding-left: 260px;
+          box-sizing: border-box;
+        }
+        .topbar {
+          position: absolute;
+          top: 0;
+          left: 260px;
+          width: calc(100% - 260px);
+          padding: 16px 32px;
+          background: rgba(255, 255, 255, 0.8);
+          backdrop-filter: blur(12px);
+          z-index: 10;
+        }
+        .topbar .rowBetween > div:first-child {
+          opacity: 0;
+          pointer-events: none;
+        }
+        .content {
+          padding: 80px 40px 40px;
+          max-width: 1280px;
+          margin: 0 auto;
+          width: 100%;
+          height: 100vh;
+          overflow-y: auto;
+        }
+        #map-container {
+          height: 600px !important;
+          border-radius: 24px;
+          border: 1px solid var(--border);
+        }
+      }
+
+      /* MAP, UTILS */
+      #map-container {
+        position: relative;
+        height: 60vh;
+        min-height: 400px;
+        width: 100%;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        margin-bottom: 20px;
+      }
+      #map {
+        height: 100%;
+        width: 100%;
+        z-index: 1;
+      }
+      .map-controls {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        right: 16px;
+        z-index: 400;
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+      }
+      .map-chip {
+        background: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border);
+        white-space: nowrap;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .map-chip.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+      .map-vendor-card {
+        position: absolute;
+        bottom: 16px;
+        left: 16px;
+        right: 16px;
+        background: white;
+        border-radius: 16px;
+        padding: 16px;
+        z-index: 400;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        transform: translateY(150%);
+        transition: transform 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .map-vendor-card.visible {
+        transform: translateY(0);
+      }
+      .mvc-icon {
+        width: 50px;
+        height: 50px;
+        background: #fff7ed;
+        color: var(--primary);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        flex-shrink: 0;
+      }
+      .mvc-info {
+        flex: 1;
+      }
+      .mvc-close {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        width: 24px;
+        height: 24px;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        cursor: pointer;
+        border: 1px solid #eee;
+      }
+      .listItem.nearest {
+        background: #f0fdf4;
+        border: 1px solid #22c55e;
+        position: relative;
+      }
+      .listItem.nearest::after {
+        content: "Terdekat";
+        position: absolute;
+        top: -8px;
+        right: 10px;
+        background: #22c55e;
+        color: white;
+        font-size: 10px;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-weight: bold;
+      }
+
+      /* --- UPGRADED VENDOR CARDS (OPEN VS CLOSED) --- */
+      .vendorCard {
+        transition: 0.2s;
+        border: 1px solid transparent;
+        cursor: pointer;
+      }
+
+      /* Highlight Toko Buka */
+      .vendorCard.open {
+        background: #ffffff;
+        border: 1px solid var(--primary);
+        box-shadow: 0 4px 15px rgba(255, 122, 0, 0.15);
+        transform: translateY(-2px);
+      }
+      .vendorCard.open .vIco {
+        border: 2px solid var(--primary);
+        background: #fff7ed;
+      }
+      .status-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        background: #22c55e;
+        border-radius: 50%;
+        margin-right: 4px;
+        box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+        animation: pulseDot 2s infinite;
+      }
+      @keyframes pulseDot {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      /* Dimmed Toko Tutup (Updated: No Pointer Events None) */
+      .vendorCard.closed {
+        opacity: 0.7;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        filter: grayscale(100%);
+      }
+      .vendorCard.closed .chip {
+        background: #94a3b8 !important;
+        color: white !important;
+        border: none !important;
+      }
+      .vendorCard.closed .vMeta b {
+        color: #64748b;
+      }
+
+      .shop-closed-banner {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #b91c1c;
+        padding: 12px;
+        border-radius: 12px;
+        text-align: center;
+        margin-bottom: 16px;
+        font-weight: 600;
+        font-size: 14px;
+      }
+      button:disabled {
+        background: #e2e8f0 !important;
+        color: #94a3b8 !important;
+        cursor: not-allowed;
+      }
+      .qris-display {
+        text-align: center;
+        margin-top: 10px;
+        background: white;
+        padding: 10px;
+        border-radius: 12px;
+        border: 2px dashed var(--primary);
+      }
+      .qris-display img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+      }
+      .proof-upload {
+        border: 2px dashed #cbd5e1;
+        padding: 15px;
+        text-align: center;
+        border-radius: 8px;
+        margin-top: 10px;
+        cursor: pointer;
+        background: #f8fafc;
+      }
+      .user-pulse {
+        position: relative;
+        width: 20px;
+        height: 20px;
+        background: #3b82f6;
+        border: 3px solid white;
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+      .user-pulse::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 60px;
+        height: 60px;
+        background: rgba(59, 130, 246, 0.3);
+        border-radius: 50%;
+        animation: pulseRing 2s infinite;
+        z-index: -1;
+      }
+      .vendor-marker-custom {
+        text-align: center;
+      }
+      .vm-bubble {
+        background: white;
+        padding: 6px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        font-size: 20px;
+        display: inline-block;
+        position: relative;
+        transition: transform 0.2s;
+        border: 2px solid transparent;
+      }
+      .vm-bubble.active {
+        transform: scale(1.2);
+        border-color: var(--primary);
+        z-index: 500;
+      }
+      .vm-arrow {
+        width: 0;
+        height: 0;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 8px solid white;
+        margin: -2px auto 0;
+      }
+      .menu-item-card {
+        display: flex;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border);
+        transition: 0.2s;
+      }
+      .menu-img {
+        width: 64px;
+        height: 64px;
+        border-radius: 12px;
+        object-fit: cover;
+        margin-right: 12px;
+        background: #f1f5f9;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+      }
+      .menu-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .menu-info b {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 14px;
+      }
+      .menu-btn-container {
+        margin-left: 10px;
+      }
+      .vendorCard .vIco img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+
+      /* Modals */
+      .modal {
+        position: fixed;
+        inset: 0;
+        z-index: 2000;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+      }
+      .overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(2px);
+      }
+      .sheet {
+        position: relative;
+        width: min(600px, 100%);
+        background: #fff;
+        border-radius: 24px 24px 0 0;
+        padding: 20px;
+        max-height: 90vh;
+        overflow-y: auto;
+        animation: slideUp 0.3s;
+        z-index: 2001;
+      }
+      @keyframes slideUp {
+        from {
+          transform: translateY(100%);
+        }
+        to {
+          transform: translateY(0);
+        }
+      }
+      .hidden {
+        display: none !important;
+      }
+      .btn {
+        border: none;
+        cursor: pointer;
+        border-radius: 12px;
+        padding: 12px;
+        font-weight: 700;
+        transition: 0.2s;
+        font-size: 14px;
+      }
+      .btn.primary {
+        background: var(--primary);
+        color: #fff;
+        box-shadow: 0 4px 10px rgba(255, 122, 0, 0.2);
+      }
+      .btn.small {
+        padding: 8px 14px;
+        font-size: 12px;
+        border-radius: 8px;
+      }
+      .btn.ghost {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text);
+      }
+      .iconBtn {
+        border: none;
+        background: transparent;
+        font-size: 20px;
+        cursor: pointer;
+      }
+      @media (min-width: 768px) {
+        .modal {
+          align-items: center;
+        }
+        .sheet {
+          border-radius: 24px;
+          max-width: 500px;
+        }
+        #menuList {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          gap: 20px;
+          padding-top: 10px;
+        }
+        .menu-item-card {
+          flex-direction: column;
+          align-items: flex-start;
+          border: 1px solid var(--border);
+          border-radius: 16px;
+          padding: 0;
+          overflow: hidden;
+          background: white;
+          height: 100%;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+        .menu-item-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+          border-color: var(--primary);
+        }
+        .menu-img {
+          width: 100%;
+          height: 160px;
+          margin: 0;
+          border-radius: 0;
+        }
+        .menu-info {
+          padding: 16px;
+          width: 100%;
+          box-sizing: border-box;
+        }
+        .menu-info b {
+          font-size: 16px;
+          margin-bottom: 6px;
+        }
+        .menu-btn-container {
+          width: 100%;
+          padding: 0 16px 16px;
+          margin: 0;
+          box-sizing: border-box;
+          margin-top: auto;
+        }
+        .menu-btn-container button {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+
+      /* --- DYNAMIC ISLAND STYLES --- */
+      .dynamic-island {
+        position: fixed;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120px;
+        height: 36px;
+        background: #000;
+        border-radius: 40px;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        overflow: hidden;
+        cursor: pointer;
+      }
+      .dynamic-island.expanded {
+        width: 95%;
+        max-width: 400px;
+        height: 80vh;
+        border-radius: 28px;
+        background: rgba(18, 18, 18, 0.96);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        cursor: default;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .di-content-min {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        opacity: 1;
+        transition: opacity 0.2s;
+        pointer-events: none;
+      }
+      .dynamic-island.expanded .di-content-min {
+        opacity: 0;
+        display: none;
+      }
+      .di-avatar-anim {
+        width: 20px;
+        height: 20px;
+        background: #ff7a00;
+        border-radius: 50%;
+        animation: pulse-ring 2s infinite;
+      }
+      @keyframes pulse-ring {
+        0% {
+          box-shadow: 0 0 0 0 rgba(255, 122, 0, 0.7);
+        }
+        70% {
+          box-shadow: 0 0 0 6px rgba(0, 0, 0, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+        }
+      }
+      .di-chat-container {
+        display: none;
+        width: 100%;
+        height: 100%;
+        flex-direction: column;
+        opacity: 0;
+        transition: opacity 0.3s ease 0.2s;
+      }
+      .dynamic-island.expanded .di-chat-container {
+        display: flex;
+        opacity: 1;
+      }
+      .di-header {
+        height: 65px;
+        padding: 0 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(255, 255, 255, 0.03);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .di-header-info h4 {
+        margin: 0;
+        font-size: 16px;
+        color: #fff;
+      }
+      .di-header-info span {
+        font-size: 11px;
+        color: #00ff88;
+        letter-spacing: 0.5px;
+      }
+      .di-close-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        color: #fff;
+        cursor: pointer;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .di-close-btn:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: rotate(90deg);
+      }
+      .di-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        scroll-behavior: smooth;
+      }
+      .di-messages::-webkit-scrollbar {
+        width: 4px;
+      }
+      .di-messages::-webkit-scrollbar-thumb {
+        background: #444;
+        border-radius: 4px;
+      }
+      .bubble {
+        max-width: 75%;
+        padding: 10px 15px;
+        border-radius: 18px;
+        font-size: 14px;
+        line-height: 1.4;
+        position: relative;
+        animation: slideUp 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px) scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+      .bubble.me {
+        align-self: flex-end;
+        background: linear-gradient(135deg, #ff7a00, #ff5e00);
+        color: white;
+        border-bottom-right-radius: 4px;
+        box-shadow: 0 4px 15px rgba(255, 94, 0, 0.2);
+      }
+      .bubble.them {
+        align-self: flex-start;
+        background: #333;
+        color: #eee;
+        border-bottom-left-radius: 4px;
+      }
+      .bubble img {
+        max-width: 100%;
+        border-radius: 10px;
+        margin-top: 5px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .bubble.location {
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .di-input-area {
+        padding: 10px 15px;
+        background: rgba(0, 0, 0, 0.3);
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        position: relative;
+      }
+      .icon-btn {
+        background: none;
+        border: none;
+        color: #aaa;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 5px;
+        transition:
+          transform 0.2s,
+          color 0.2s;
+      }
+      .icon-btn:hover {
+        color: #fff;
+        transform: scale(1.1);
+      }
+      .icon-btn:active {
+        transform: scale(0.9);
+      }
+      .chat-input {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 10px 15px;
+        color: white;
+        outline: none;
+        font-size: 14px;
+      }
+      .send-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #ff7a00;
+        color: white;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgba(255, 122, 0, 0.4);
+        transition: 0.2s;
+      }
+      .send-btn:active {
+        transform: scale(0.85);
+      }
+      .attach-menu {
+        position: absolute;
+        bottom: 70px;
+        left: 15px;
+        background: rgba(40, 40, 40, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 10px;
+        display: flex;
+        gap: 15px;
+        transform: scale(0);
+        opacity: 0;
+        transform-origin: bottom left;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .attach-menu.active {
+        transform: scale(1);
+        opacity: 1;
+      }
+      .attach-item {
+        text-align: center;
+        cursor: pointer;
+      }
+      .attach-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        margin-bottom: 5px;
+        transition: transform 0.2s;
+        color: white;
+      }
+      .attach-item:hover .attach-icon {
+        transform: translateY(-3px);
+      }
+      .emoji-panel {
+        height: 0;
+        overflow: hidden;
+        background: #1a1a1a;
+        transition: height 0.3s ease;
+      }
+      .emoji-panel.active {
+        height: 180px;
+        padding: 10px;
+      }
+      .panel-tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #333;
+        padding-bottom: 5px;
+      }
+      .panel-tab {
+        color: #888;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: bold;
+      }
+      .panel-tab.active {
+        color: #ff7a00;
+        border-bottom: 2px solid #ff7a00;
+      }
+      .emoji-grid,
+      .sticker-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 10px;
+        height: 130px;
+        overflow-y: auto;
+      }
+      .emoji-item {
+        font-size: 24px;
+        cursor: pointer;
+        text-align: center;
+      }
+      .sticker-item {
+        width: 100%;
+        cursor: pointer;
+        transition: transform 0.1s;
+      }
+      .sticker-item:hover {
+        transform: scale(1.1);
+      }
+
+      /* TOPUP STYLES */
+      .amount-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+      .amount-btn {
+        padding: 12px;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        background: white;
+        font-weight: 700;
+        color: #64748b;
+        cursor: pointer;
+        transition: 0.2s;
+        font-size: 13px;
+      }
+      .amount-btn:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+      .amount-btn.active {
+        background: #fff7ed;
+        border: 2px solid var(--primary);
+        color: var(--primary);
+        box-shadow: 0 4px 10px rgba(255, 122, 0, 0.2);
+      }
+      .bank-info-box {
+        background: #f8fafc;
+        border: 1px dashed #cbd5e1;
+        padding: 12px;
+        border-radius: 12px;
+        margin-bottom: 16px;
+        text-align: center;
+      }
+      .bank-number {
+        font-size: 18px;
+        font-weight: 800;
+        color: #1e293b;
+        letter-spacing: 1px;
+        margin-top: 4px;
+        display: block;
+        cursor: pointer;
+      }
+
+      /* --- RATING MODAL STYLES --- */
+      .sheetHead h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+      }
+      #starContainer {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      /* --- LIVE GPS LOCK BUTTON --- */
+      .gps-lock-btn {
+        position: absolute;
+        bottom: 200px;
+        right: 16px;
+        width: 44px;
+        height: 44px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        z-index: 400;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .gps-lock-btn.active {
+        background: var(--primary);
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="splash">
+      <img
+        src="pikul.jpeg"
+        class="brand-img"
+        style="
+          width: 90px;
+          height: 90px;
+          border-radius: 24px;
+          animation: bounce 1s infinite alternate;
+        "
+      />
+      <div
+        style="
+          margin-top: 16px;
+          font-weight: 700;
+          font-size: 20px;
+          letter-spacing: 1px;
+        "
+      >
+        PIKUL
+      </div>
+    </div>
+
+    <input
+      type="file"
+      id="imageInput"
+      accept="image/*"
+      style="display: none"
+      onchange="handleImageUpload(event)"
+    />
+
+    <div
+      id="dynamicIsland"
+      class="dynamic-island hidden"
+      onclick="expandIsland()"
+    >
+      <div class="di-content-min">
+        <div class="di-avatar-anim"></div>
+        <span style="font-size: 13px; font-weight: 600">Pesan Masuk</span>
+      </div>
+
+      <div class="di-chat-container" onclick="event.stopPropagation()">
+        <div class="di-header">
+          <div style="display: flex; align-items: center; gap: 12px">
+            <div
+              style="
+                width: 42px;
+                height: 42px;
+                background: #333;
+                border-radius: 50%;
+                overflow: hidden;
+              "
+            >
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                style="width: 100%; height: 100%; object-fit: cover"
+              />
+            </div>
+            <div class="di-header-info">
+              <h4 id="diChatName">Toko Pikul</h4>
+              <span>● Online</span>
+            </div>
+          </div>
+          <button class="di-close-btn" onclick="collapseIsland(event)">
+            ✕
+          </button>
+        </div>
+
+        <div id="diChatBox" class="di-messages"></div>
+
+        <div id="attachMenu" class="attach-menu">
+          <div class="attach-item" onclick="triggerImageInput()">
+            <div
+              class="attach-icon"
+              style="background: linear-gradient(45deg, #ff0080, #7928ca)"
+            >
+              📷
+            </div>
+            <span style="font-size: 10px; color: #ccc">Galeri</span>
+          </div>
+          <div class="attach-item" onclick="sendLocation()">
+            <div
+              class="attach-icon"
+              style="background: linear-gradient(45deg, #00c6ff, #0072ff)"
+            >
+              📍
+            </div>
+            <span style="font-size: 10px; color: #ccc">Lokasi</span>
+          </div>
+          <div class="attach-item">
+            <div
+              class="attach-icon"
+              style="background: linear-gradient(45deg, #f09819, #edde5d)"
+            >
+              📄
+            </div>
+            <span style="font-size: 10px; color: #ccc">File</span>
+          </div>
+        </div>
+
+        <div class="di-input-area">
+          <button class="icon-btn" onclick="toggleAttachMenu()">⊕</button>
+          <input
+            id="diChatInput"
+            class="chat-input"
+            placeholder="Ketik pesan..."
+            autocomplete="off"
+          />
+          <button class="icon-btn" onclick="toggleEmojiPanel()">☺</button>
+          <button id="diSendBtn" class="send-btn" onclick="sendMessage()">
+            ➤
+          </button>
+        </div>
+
+        <div id="emojiPanel" class="emoji-panel">
+          <div class="panel-tabs">
+            <span class="panel-tab active" onclick="showTab('emoji')"
+              >EMOJI</span
+            >
+            <span class="panel-tab" onclick="showTab('sticker')">STIKER</span>
+          </div>
+
+          <div id="tabEmoji" class="emoji-grid"></div>
+
+          <div id="tabSticker" class="sticker-grid" style="display: none">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/742/742751.png"
+              class="sticker-item"
+              onclick="sendSticker(this.src)"
+            />
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/742/742752.png"
+              class="sticker-item"
+              onclick="sendSticker(this.src)"
+            />
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/190/190648.png"
+              class="sticker-item"
+              onclick="sendSticker(this.src)"
+            />
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/4710/4710984.png"
+              class="sticker-item"
+              onclick="sendSticker(this.src)"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <main id="auth" class="auth-page hidden">
+      <div class="auth-visual">
+        <div class="visual-content">
+          <h1>Jajan Kuliner Enak,<br />Gak Pake Ribet dengan PIKUL.</h1>
+          <p>
+            Aplikasi PIKUL membantu kamu menemukan pedagang kaki lima terbaik di
+            sekitarmu, pesan makanan online, dan bayar nontunai dengan mudah.
+          </p>
+        </div>
+      </div>
+      <div class="auth-form-container">
+        <div class="auth-card">
+          <div class="brand-header">
+            <img src="pikul.jpeg" class="brand-logo" /><span class="brand-text"
+              >PIKUL</span
+            >
+          </div>
+          <form id="loginForm">
+            <h2 class="auth-title">Masuk 👋</h2>
+            <div class="input-group">
+              <label class="input-label">Email</label
+              ><input
+                id="loginEmail"
+                type="email"
+                class="input-field"
+                required
+              />
+            </div>
+            <div class="input-group">
+              <label class="input-label">Password</label
+              ><input
+                id="loginPass"
+                type="password"
+                class="input-field"
+                required
+              />
+            </div>
+            <button class="btn-auth" type="submit">Masuk</button>
+            <div class="switch-text">
+              Pengguna baru?
+              <span class="switch-link" onclick="switchAuthMode('register')"
+                >Daftar Akun</span
+              >
+            </div>
+          </form>
+          <form id="registerForm" class="hidden">
+            <h2 class="auth-title">Daftar Akun 🚀</h2>
+            <div class="input-group">
+              <label class="input-label">Nama</label
+              ><input id="regName" class="input-field" required />
+            </div>
+            <div class="input-group">
+              <label class="input-label">Email</label
+              ><input id="regEmail" type="email" class="input-field" required />
+            </div>
+            <div class="input-group">
+              <label class="input-label">WA</label
+              ><input id="regPhone" type="tel" class="input-field" required />
+            </div>
+            <div class="input-group">
+              <label class="input-label">Password</label
+              ><input
+                id="regPass"
+                type="password"
+                class="input-field"
+                required
+              />
+            </div>
+            <button class="btn-auth" type="submit">Daftar</button>
+            <div class="switch-text">
+              <span class="switch-link" onclick="switchAuthMode('login')"
+                >Masuk disini</span
+              >
+            </div>
+          </form>
+
+          <div class="auth-extra-actions">
+            <button class="btn-guest" onclick="continueGuest()">
+              🕵️ Lanjutkan Tanpa Akun
+            </button>
+
+            <div class="seller-link-box">
+              <a href="seller/index.html">🛍️ Ingin berjualan di PIKUL?</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div id="app" class="app hidden">
+      <header id="mainHeader" class="topbar">
+        <div class="rowBetween">
+          <div style="display: flex; align-items: center; gap: 8px">
+            <img
+              src="pikul.jpeg"
+              class="brand-img"
+              style="width: 32px; height: 32px; border-radius: 8px"
+            />
+            <div style="font-weight: 800; font-size: 16px">PIKUL</div>
+          </div>
+        </div>
+        <div class="rowBetween">
+          <span id="gpsStatus" class="pill warn" style="font-size: 10px"
+            >GPS Off</span
+          ><button
+            id="logoutBtn"
+            class="iconBtn"
+            style="width: 32px; height: 32px"
+          >
+            ⎋
+          </button>
+        </div>
+      </header>
+      <main class="content">
+        <section id="screenHome">
+          <div style="margin-bottom: 20px">
+            <h2 style="margin: 0">
+              Hai,
+              <span id="userName" style="color: var(--primary)">Tamu</span> 👋
+            </h2>
+            <p class="muted" style="margin: 4px 0 0">
+              Lapar? Cari pedagang dekat sini.
+            </p>
+          </div>
+          <div class="promo-container">
+            <div id="promoList" class="promo-slider"></div>
+            <div id="promoDots" class="promo-dots"></div>
+          </div>
+          <div
+            style="
+              position: sticky;
+              top: 0;
+              background: var(--bg);
+              z-index: 10;
+              padding: 10px 0 0;
+              margin-bottom: 10px;
+            "
+          >
+            <input
+              id="search"
+              placeholder="🔍 Cari pedagang..."
+              style="
+                margin-bottom: 12px;
+                border: none;
+                box-shadow: var(--shadow);
+              "
+            />
+            <div id="categoryFilters" class="filter-row"></div>
+          </div>
+          <div id="vendorList"></div>
+        </section>
+        <section id="screenMap" class="hidden">
+          <div id="map-container">
+            <div class="map-controls" id="mapChipsContainer"></div>
+            <div id="map"></div>
+            <button
+              class="gps-lock-btn"
+              id="lockGpsBtn"
+              onclick="toggleMapLock()"
+            >
+              🎯
+            </button>
+            <div id="mapCard" class="map-vendor-card">
+              <div class="mvc-close" onclick="closeMapCard()">✕</div>
+              <div class="mvc-icon" id="mvcIcon">🏪</div>
+              <div class="mvc-info">
+                <b
+                  id="mvcName"
+                  style="display: block; font-size: 15px; margin-bottom: 2px"
+                  >-</b
+                ><span
+                  id="mvcDist"
+                  class="muted"
+                  style="font-size: 12px; display: block; margin-bottom: 4px"
+                  >- km</span
+                >
+                <div
+                  id="mvcType"
+                  class="pill small"
+                  style="background: #eee; color: #666"
+                >
+                  -
+                </div>
+              </div>
+              <button id="mvcBtn" class="btn primary small">Lihat Menu</button>
+            </div>
+          </div>
+          <h3 style="margin: 20px 0 10px">List Terdekat</h3>
+          <div
+            id="realtimeList"
+            style="
+              display: grid;
+              gap: 10px;
+              grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+              padding-bottom: 20px;
+            "
+          ></div>
+        </section>
+        <section id="screenOrders" class="hidden">
+          <h2 style="margin: 0 0 16px">Pesanan Saya</h2>
+          <div class="segment-control">
+            <button
+              class="segment-btn active"
+              onclick="switchOrderTab('active')"
+            >
+              Dalam Proses</button
+            ><button class="segment-btn" onclick="switchOrderTab('history')">
+              Riwayat
+            </button>
+          </div>
+          <div
+            id="ordersList"
+            style="
+              display: grid;
+              gap: 10px;
+              grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            "
+          ></div>
+        </section>
+        <section id="screenMessages" class="hidden">
+          <h2 style="margin: 0 0 16px">Pesan</h2>
+          <div
+            id="inboxList"
+            style="display: flex; flex-direction: column; gap: 10px"
+          ></div>
+        </section>
+
+        <section id="screenProfile" class="hidden">
+          <h2 style="margin: 0 0 16px">Akun Saya</h2>
+          <div id="profileContent"></div>
+
+          <button
+            id="mobileProfileLogout"
+            class="btn ghost"
+            style="
+              width: 100%;
+              margin-top: 20px;
+              color: #ef4444;
+              border-color: #fecaca;
+              background: #fff5f5;
+              display: none;
+            "
+          >
+            Keluar Akun
+          </button>
+        </section>
+      </main>
+      <nav class="bottomNav">
+        <div class="desktop-brand">
+          <img src="pikul.jpeg" class="brand-img" />
+          <div>PIKUL</div>
+        </div>
+        <button class="nav active" data-go="Home">
+          <span>🏠</span><span>Home</span>
+        </button>
+        <button class="nav" data-go="Map">
+          <span>🗺️</span><span>Peta</span>
+        </button>
+        <button class="nav" data-go="Orders">
+          <span>🧾</span><span>Order</span>
+        </button>
+        <button class="nav" data-go="Messages">
+          <span>💬</span><span>Chat</span>
+        </button>
+        <button class="nav" data-go="Profile">
+          <span>👤</span><span>Akun</span>
+        </button>
+      </nav>
+      <button id="fabCart" class="fab-cart hidden" onclick="openGlobalCart()">
+        🛒
+        <div id="cartBadge" class="cart-badge">0</div>
+      </button>
+    </div>
+
+    <div id="vendorModal" class="modal hidden">
+      <div class="overlay" data-close="vendorModal"></div>
+      <div class="sheet">
+        <div class="rowBetween">
+          <div>
+            <h2 id="vTitle" style="margin: 0">-</h2>
+            <small class="muted" id="vMeta">-</small>
+          </div>
+          <button class="iconBtn" data-close="vendorModal">✕</button>
+        </div>
+        <div class="rowBetween" style="margin: 16px 0">
+          <button
+            id="chatVendorBtn"
+            class="btn ghost small"
+            style="flex: 1; background: var(--input-bg)"
+          >
+            💬 Chat Penjual
+          </button>
+        </div>
+        <h4 style="margin: 0 0 10px">Daftar Menu</h4>
+        <div id="menuList"></div>
+      </div>
+    </div>
+    <div id="checkoutModal" class="modal hidden">
+      <div class="overlay" data-close="checkoutModal"></div>
+      <div class="sheet">
+        <div class="rowBetween" style="margin-bottom: 12px">
+          <h3>Keranjang</h3>
+          <button
+            class="iconBtn"
+            data-close="checkoutModal"
+            style="width: 32px; height: 32px"
+          >
+            ✕
+          </button>
+        </div>
+        <div
+          id="checkoutItems"
+          style="max-height: 300px; overflow-y: auto; margin-bottom: 16px"
+        ></div>
+        <div class="card" style="background: var(--input-bg)">
+          <div class="rowBetween">
+            <span>Total</span><b class="big" id="checkoutTotal">0</b>
+          </div>
+
+          <div style="margin: 15px 0">
+            <label
+              class="input-label"
+              style="margin-bottom: 8px; display: block"
+              >Waktu Pesanan</label
+            >
+
+            <div class="segment-control" style="margin-bottom: 10px">
+              <button
+                id="btnAsap"
+                class="segment-btn active"
+                onclick="setOrderTimeType('asap')"
+              >
+                ⚡ Sekarang
+              </button>
+              <button
+                id="btnPo"
+                class="segment-btn"
+                onclick="setOrderTimeType('po')"
+              >
+                📅 Pre-Order
+              </button>
+            </div>
+
+            <div
+              id="poInputContainer"
+              class="hidden"
+              style="
+                background: #f8fafc;
+                padding: 10px;
+                border-radius: 12px;
+                border: 1px solid #e2e8f0;
+              "
+            >
+              <div style="display: flex; gap: 10px">
+                <div style="flex: 1">
+                  <label
+                    style="font-size: 11px; font-weight: 600; color: #64748b"
+                    >Tanggal</label
+                  >
+                  <input
+                    type="date"
+                    id="poDate"
+                    class="input-field"
+                    style="padding: 8px; font-size: 13px"
+                  />
+                </div>
+                <div style="flex: 1">
+                  <label
+                    style="font-size: 11px; font-weight: 600; color: #64748b"
+                    >Jam</label
+                  >
+                  <input
+                    type="time"
+                    id="poTime"
+                    class="input-field"
+                    style="padding: 8px; font-size: 13px"
+                  />
+                </div>
+              </div>
+              <div style="font-size: 10px; color: #f59e0b; margin-top: 5px">
+                ⚠️ Pastikan pedagang buka pada jam tersebut.
+              </div>
+            </div>
+          </div>
+
+          <div style="margin: 15px 0">
+            <label class="input-label">Metode Pengiriman</label>
+            <div class="segment-control">
+              <button
+                id="btnPickup"
+                class="segment-btn active"
+                onclick="setDeliveryMethod('pickup')"
+              >
+                🛍️ Ambil Sendiri
+              </button>
+              <button
+                id="btnDelivery"
+                class="segment-btn"
+                onclick="setDeliveryMethod('delivery')"
+              >
+                🛵 Diantar Seller
+              </button>
+            </div>
+            <div
+              id="deliveryAddressField"
+              class="hidden"
+              style="margin-top: 10px"
+            >
+              <textarea
+                id="deliveryAddress"
+                class="input-field"
+                placeholder="Alamat lengkap pengantaran..."
+              ></textarea>
+            </div>
+          </div>
+
+          <input
+            id="orderNote"
+            placeholder="Catatan..."
+            style="margin-top: 10px"
+          /><label
+            style="
+              display: block;
+              margin-top: 10px;
+              font-size: 12px;
+              font-weight: 600;
+            "
+            >Metode Pembayaran</label
+          ><select
+            id="payMethod"
+            style="
+              margin-top: 5px;
+              width: 100%;
+              padding: 8px;
+              border-radius: 8px;
+            "
+          >
+            <option value="cash">💵 Tunai</option>
+          </select>
+          <div id="qrisContainer" class="qris-display hidden">
+            <div
+              id="qrisDynamicArea"
+              style="
+                background: white;
+                padding: 10px;
+                border-radius: 8px;
+                display: none;
+                justify-content: center;
+              "
+            >
+              <div id="qrisCanvas"></div>
+            </div>
+            <img
+              id="qrisImageDisplay"
+              src=""
+              alt="QRIS Statis"
+              style="display: none"
+            />
+
+            <div
+              style="
+                margin-top: 10px;
+                text-align: center;
+                color: var(--primary);
+              "
+            >
+              <b id="qrisNominalDisplay" style="font-size: 18px"></b>
+            </div>
+            <small style="display: block; text-align: center; color: #64748b"
+              >Scan untuk bayar sesuai nominal</small
+            >
+
+            <label
+              style="
+                display: block;
+                text-align: left;
+                font-size: 12px;
+                font-weight: 600;
+                margin-top: 15px;
+              "
+              >Upload Bukti (Wajib)</label
+            >
+            <div class="proof-upload" onclick="triggerProofUpload()">
+              <span id="proofText">📷 Klik untuk upload bukti</span>
+            </div>
+            <input
+              type="file"
+              id="paymentProofInput"
+              accept="image/*"
+              class="hidden"
+              onchange="handleProofUpload(this)"
+            />
+          </div>
+        </div>
+        <button
+          id="placeOrderBtn"
+          class="btn primary"
+          style="width: 100%; margin-top: 16px"
+        >
+          Pesan & Verifikasi
+        </button>
+      </div>
+    </div>
+
+    <div id="topupModal" class="modal hidden">
+      <div class="overlay" data-close="topupModal"></div>
+      <div class="sheet">
+        <div class="rowBetween" style="margin-bottom: 16px">
+          <h3>Isi Saldo PIKUL</h3>
+          <button class="iconBtn" data-close="topupModal">✕</button>
+        </div>
+        <label class="input-label">Pilih Nominal</label>
+        <div class="amount-grid" id="topupGrid"></div>
+        <label class="input-label">Transfer Ke</label>
+        <div class="bank-info-box">
+          <div style="font-size: 12px; color: #64748b">
+            Seabank (Admin PIKUL)
+          </div>
+          <span class="bank-number" onclick="copyToClipboard('901104589717')"
+            >9011 0458 9717</span
+          >
+          <div style="font-size: 10px; color: #94a3b8; margin-top: 4px">
+            Klik nomor untuk salin
+          </div>
+        </div>
+        <label class="input-label">Bukti Transfer (Wajib)</label>
+        <div class="proof-upload" onclick="triggerTopupProof()">
+          <span id="topupProofText">📷 Upload Bukti</span>
+        </div>
+        <input
+          type="file"
+          id="topupProofInput"
+          accept="image/*"
+          class="hidden"
+          onchange="handleTopupProof(this)"
+        />
+        <button
+          id="btnSubmitTopup"
+          class="btn primary full"
+          style="margin-top: 20px"
+          onclick="submitTopupRequest()"
+        >
+          Ajukan Isi Saldo
+        </button>
+      </div>
+    </div>
+
+    <div id="rateModal" class="modal hidden">
+      <div class="overlay" data-close="rateModal"></div>
+      <div class="sheet">
+        <div class="sheetHead">
+          <h3 style="margin: 0; font-size: 18px">Beri Penilaian</h3>
+          <button class="iconBtn" data-close="rateModal">✕</button>
+        </div>
+        <div class="sheetBody" style="text-align: center; padding: 20px 0">
+          <p style="margin: 0 0 15px 0; color: #64748b">
+            Bagaimana rasa makanannya?
+          </p>
+          <div
+            id="starContainer"
+            style="font-size: 36px; margin-bottom: 20px; cursor: pointer"
+          ></div>
+          <button
+            id="btnSubmitRate"
+            class="btn primary full"
+            onclick="submitRating()"
+          >
+            Kirim Penilaian
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function () {
+          navigator.serviceWorker.register("./sw.js").catch(console.log);
+        });
+      }
+    </script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          // Sesuaikan path sw.js tergantung lokasi file HTML
+          // Jika di root (index.html): "./sw.js"
+          // Jika di dalam folder (seller/index.html): "../sw.js"
+
+          const swPath =
+            window.location.pathname.includes("/seller/") ||
+            window.location.pathname.includes("/admin/")
+              ? "../sw.js"
+              : "./sw.js";
+
+          navigator.serviceWorker
+            .register(swPath)
+            .then((reg) =>
+              console.log("PWA Service Worker Registered!", reg.scope),
+            )
+            .catch((err) => console.log("PWA Error:", err));
+        });
+      }
+    </script>
+  </body>
+</html>
